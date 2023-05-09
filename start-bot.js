@@ -11,7 +11,6 @@ connectMongoDB().catch(console.dir);
 // Create a new client instance
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
-// client.commands = new Collection();
 client.commands = getAllCommands('client');
 
 const eventsPath = path.join(__dirname, 'events');
