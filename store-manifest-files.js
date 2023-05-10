@@ -2,6 +2,7 @@ const { bungieAPIKey, bungieRootURI } = require('./config.js');
 const fs = require('fs');
 const axios = require('axios');
 const {resetLine, replaceLine} = require('./utilities/commonFun.js');
+const path = require('path');
 
 const config = {
     headers: {
@@ -71,4 +72,9 @@ const createManifestFiles = async (manifestPath) => {
 
 module.exports = {
     createManifestFiles: async (manifestPath) => createManifestFiles(manifestPath)
+}
+
+if (require.main === module) {
+    const manifestPath = path.join(__dirname, 'manifest');
+    createManifestFiles(manifestPath);
 }
