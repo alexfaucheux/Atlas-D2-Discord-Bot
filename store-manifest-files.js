@@ -10,7 +10,16 @@ const config = {
     }
 };
 
-const getManifestUrls = async () => {
+if (require.main === module) {
+    const manifestPath = path.join(__dirname, 'manifest');
+    createManifestFiles(manifestPath);
+}
+
+module.exports = {
+    createManifestFiles: async (manifestPath) => createManifestFiles(manifestPath)
+}
+
+async function getManifestUrls() {
     const manifestMap = {};
     const endpoint = bungieRootURI + '/Destiny2/Manifest/';
     const result = await axios.get(endpoint, config);
@@ -26,7 +35,7 @@ const getManifestUrls = async () => {
     return Promise.resolve(manifestMap);
 };
 
-const createManifestFile = async (filePath, contentDefURL) => {
+async function createManifestFile(filePath, contentDefURL) {
     const manifestContent = await axios.get(contentDefURL);
 
     try {
@@ -38,7 +47,7 @@ const createManifestFile = async (filePath, contentDefURL) => {
     return Promise.resolve();
 };
 
-const createManifestFiles = async (manifestPath) => {
+async function createManifestFiles(manifestPath) {
     const manifestMap = await getManifestUrls();
     const manifestSize = Object.keys(manifestMap).length;
 
@@ -70,11 +79,3 @@ const createManifestFiles = async (manifestPath) => {
     }
 };
 
-module.exports = {
-    createManifestFiles: async (manifestPath) => createManifestFiles(manifestPath)
-}
-
-if (require.main === module) {
-    const manifestPath = path.join(__dirname, 'manifest');
-    createManifestFiles(manifestPath);
-}
