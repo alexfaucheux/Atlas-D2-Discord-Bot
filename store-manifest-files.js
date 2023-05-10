@@ -68,7 +68,7 @@ async function createManifestFiles(manifestPath) {
     printProgress(progress);
     for (const filePath in manifestMap) {
         const contentDefURL = manifestMap[filePath];
-        await createManifestFile(filePath, contentDefURL).then(() => {
+        createManifestFile(filePath, contentDefURL).then(() => {
             progress += 1;
             printProgress(progress);
         }).catch((err) => {
