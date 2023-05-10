@@ -1,6 +1,7 @@
 const { bungieAPIKey, bungieRootURI } = require('./config.js');
 const fs = require('fs');
 const axios = require('axios');
+const {resetLine, replaceLine} = require('./utilities/commonFun.js');
 
 const config = {
     headers: {
@@ -29,27 +30,30 @@ const createManifestFile = async (filePath, contentDefURL) => {
 
     try {
         await fs.promises.writeFile(filePath, JSON.stringify(manifestContent.data));
-    } catch {
+    } catch (err) {
         return Promise.reject({error: err, filePath: filePath});
     }
 
     return Promise.resolve();
 };
 
-const createManifestFiles = async () => {
-    const resetLine = () => {
-        process.stdout.clearLine();
-        process.stdout.cursorTo(0);
-    }
+const createManifestFiles = async (manifestPath) => {
+    const manifestMap = await getManifestUrls();
+    const manifestSize = Object.keys(manifestMap).length;
 
     const printProgress = (progress) => {
-        resetLine();
-        process.stdout.write(`Writing manifest files... ${progress}/${Object.keys(manifestMap).length} completed.`);
+        let progressLine = `Writing manifest files... ${progress}/${manifestSize}`;
+        if (progress == manifestSize) {
+            progressLine += ' Complete\n';
+        }
+        replaceLine(progressLine);
     }
 
-    const manifestMap = await getManifestUrls();
-    let progress = 0;
+    if (!fs.existsSync(manifestPath)) {
+        fs.mkdirSync(manifestPath);
+    }
 
+    let progress = 0;
 
     printProgress(progress);
     for (const filePath in manifestMap) {
@@ -65,4 +69,6 @@ const createManifestFiles = async () => {
     }
 };
 
-createManifestFiles();
+module.exports = {
+    createManifestFiles: async (manifestPath) => createManifestFiles(manifestPath)
+}
