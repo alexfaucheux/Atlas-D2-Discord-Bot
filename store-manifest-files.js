@@ -21,27 +21,47 @@ const getManifestUrls = async () => {
         manifestMap[filePath] = 'https://bungie.net' + contentDefURL;
     }
 
-    return manifestMap;
+    return Promise.resolve(manifestMap);
 };
 
 const createManifestFile = async (filePath, contentDefURL) => {
     const manifestContent = await axios.get(contentDefURL);
-    fs.writeFile(filePath, JSON.stringify(manifestContent.data), (err) => {
-        if (err) {
-            console.error(`[ERROR] Could not write file: ${filePath}\n${err}`);
-            return;
-        }
 
-        console.log(`Created ${filePath}`);
-    });
+    try {
+        await fs.promises.writeFile(filePath, JSON.stringify(manifestContent.data));
+    } catch {
+        return Promise.reject({error: err, filePath: filePath});
+    }
+
+    return Promise.resolve();
 };
 
 const createManifestFiles = async () => {
-    const manifestMap = await getManifestUrls();
+    const resetLine = () => {
+        process.stdout.clearLine();
+        process.stdout.cursorTo(0);
+    }
 
+    const printProgress = (progress) => {
+        resetLine();
+        process.stdout.write(`Writing manifest files... ${progress}/${Object.keys(manifestMap).length} completed.`);
+    }
+
+    const manifestMap = await getManifestUrls();
+    let progress = 0;
+
+
+    printProgress(progress);
     for (const filePath in manifestMap) {
         const contentDefURL = manifestMap[filePath];
-        createManifestFile(filePath, contentDefURL);
+        await createManifestFile(filePath, contentDefURL).then(() => {
+            progress += 1;
+            printProgress(progress);
+        }).catch((err) => {
+            resetLine();
+            console.error(`\n[ERROR] Could not write file: ${err.filePath}\n${err.error}\n`);
+            printProgress(progress);
+        });
     }
 };
 
