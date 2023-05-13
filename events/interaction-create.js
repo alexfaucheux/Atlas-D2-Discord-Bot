@@ -1,4 +1,4 @@
-const { Events } = require('discord.js');
+const { Events, quote } = require('discord.js');
 
 module.exports = {
     name: Events.InteractionCreate,
@@ -25,13 +25,19 @@ async function executeInteraction(interaction) {
         await command.execute(interaction);
     } catch (error) {
 		console.error(`Unabled to execute command.\n${error}`);
-        await handleInteractionError(interaction);
+        await handleInteractionError(interaction, error);
     }
 }
 
-async function handleInteractionError(interaction) {
+async function handleInteractionError(interaction, error) {
+    let con;
+    if (500 <= error.response?.status < 600) {
+        con = 'Oops!  Looks like this service is unavailable right now.  Please try again later.'
+    } else {
+        con = 'There was an error while executing this command!'
+    }
     const errorObj = {
-        content: 'There was an error while executing this command!',
+        content: quote(con),
         ephemeral: true
     };
 

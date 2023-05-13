@@ -13,7 +13,7 @@ const replaceLine = (str) => {
 }
 
 module.exports = {
-    resetLine: () => resetLine(),
-    writeLine: (str) => writeLine(str),
-    replaceLine: (str) => replaceLine(str)
+    resetLine,
+    writeLine,
+    replaceLine
 }

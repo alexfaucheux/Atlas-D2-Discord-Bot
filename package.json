@@ -1,14 +1,15 @@
 {
-  "name": "sample-discord-bot",
+  "name": "destiny-2-discord-bot",
   "version": "1.0.0",
   "description": "first bot",
   "main": "index.js",
   "scripts": {
     "start": "npm run deploy-run",
-    "deploy-run": "node deploy-commands.js && node start-bot.js",
-    "deploy-global": "node deploy-commands.js -global -live",
-    "deploy-global-run": "node deploy-commands.js -global -live && node start-bot.js",
-    "manifest": "node store-manifest-files.js",
+    "initialize": "npm install && node modules/store-manifest-files.js && cd twint-zero && go mod init twint-zero && go mod tidy",
+    "deploy-run": "node modules/deploy-commands.js && node start-bot.js",
+    "deploy-global": "node modules/deploy-commands.js -global -live",
+    "deploy-global-run": "npm run deploy-global && node start-bot.js",
+    "manifest": "node modules/store-manifest-files.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Alex Faucheux",
@@ -20,6 +21,8 @@
     "discord.js": "^14.10.2",
     "dotenv": "^16.0.3",
     "fs": "^0.0.1-security",
+    "html-to-json-parser": "^1.1.0",
+    "jsdom": "^22.0.0",
     "mongoose": "^7.1.0"
   },
   "devDependencies": {

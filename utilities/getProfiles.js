@@ -1,32 +1,41 @@
-const endpoint = '/Destiny2/SearchDestinyPlayerByBungieName/All/';
-const { bungieAPIKey, bungieRootURI } = require('../config.js');
+// Import global functions
 const axios = require('axios');
+
+// Import local functions
+const { generateEndpointString } = require('./generateEndpoint');
+
+// Import constants
+const { rootURI, endpoints } = require('../constants/bungieEndpoints.json');
+
+// Assign constants
+const { BUNGIE_API_KEY } = process.env;
+const endpointObj = endpoints.searchPlayerByName;
 
 const axiosConfig = {
     headers: {
-        'X-API-Key': bungieAPIKey
+        'X-API-Key': BUNGIE_API_KEY
     }
 };
 
 module.exports = {
-    getProfiles: (bungieName) => getProfiles(bungieName)
+    getProfiles
 };
 
 async function getProfiles(bungieName) {
     const profiles = [];
-    const nameSplit = bungieName.split('#');
-    const name = nameSplit[0];
-    const nameCode = nameSplit[1];
-    const url = bungieRootURI + endpoint;
+    const [name, nameCode] = bungieName.split('#');
 
-    const axiosData = {
+    // Generate endpoint using default values
+    const endpoint = generateEndpointString(endpointObj);
+    const url = rootURI + endpoint;
+
+    const axiosBody = {
         displayName: name,
         displayNameCode: nameCode
     };
+    const resp = await axios.post(url, axiosBody, axiosConfig);
 
-    const resp = await axios.post(url, axiosData, axiosConfig);
     const bungieResp = resp.data.Response;
-
     for (const platform in bungieResp) {
         const memType = bungieResp[platform].membershipType;
         const memId = bungieResp[platform].membershipId;

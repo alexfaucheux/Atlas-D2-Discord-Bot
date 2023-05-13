@@ -4,3 +4,5 @@ config.js
 .vscode
 package-lock.json
 manifest
+tweets
+generateDefaultEndpoints.js

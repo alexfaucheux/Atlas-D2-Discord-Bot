@@ -1,3 +1,4 @@
+// Import global functions
 const fs = require('node:fs');
 const path = require('node:path');
 const { Collection } = require('discord.js');
@@ -5,14 +6,13 @@ const { Collection } = require('discord.js');
 module.exports = {
     getAllCommands: (type) => getCommands(type, 'all'),
     getLiveCommands: (type) => getCommands(type, 'live'),
-    getTestCommands: (type) => getCommands(type, 'test')
 };
 
 function getCommands(type, subfolder) {
     const fileToFolderPath = {};
     let commandFiles;
 
-    if (subfolder != 'all') {
+    if (subfolder == 'live') {
         commandFiles = getCommandFiles(fileToFolderPath, subfolder);
     } else {
         const liveFiles = getCommandFiles(fileToFolderPath, 'live');

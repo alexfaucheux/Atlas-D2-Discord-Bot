@@ -1,24 +1,25 @@
-const fs = require('node:fs');
+// Import global functions
+const { Client, GatewayIntentBits } = require('discord.js');
 const path = require('node:path');
-const { connectMongoDB } = require('./connect-db.js');
-const { token } = require('./config.js');
-const { Client, Collection, GatewayIntentBits } = require('discord.js');
-const { getAllCommands } = require('./utilities/getCommands.js');
-const { createManifestFiles } = require('./store-manifest-files.js');
-const {writeLine, replaceLine} = require('./utilities/commonFun.js');
+const dotenv = require('dotenv');
+const fs = require('node:fs');
+dotenv.config();
 
-main();
+// Import local functions
+const { connectMongoDB } = require('./modules/connect-db.js');
+const { getAllCommands } = require('./utilities/getCommands.js');
+const { writeLine, replaceLine } = require('./utilities/consoleLineMethods.js');
+
+const { DISCORD_TOKEN } = process.env;
+
+if (require.main === module) {
+    main();
+}
 
 async function main() {
-    const manifestPath = path.join(__dirname, 'manifest');
-
-    if (!fs.existsSync(manifestPath) || fs.readdirSync(manifestPath).length == 0) {
-        await createManifestFiles(manifestPath);
-    }
-
     writeLine('Connecting to MongoDB...');
     await connectMongoDB().catch(console.dir);
-    replaceLine('Connecting to MongoDB... Complete\n')
+    replaceLine('Connecting to MongoDB... Complete\n');
 
     // Create a new client instance
     const client = new Client({ intents: [GatewayIntentBits.Guilds] });
@@ -38,7 +39,6 @@ async function main() {
         }
     }
 
-    // Log in to Discord with your client's token
-    client.login(token);
+    // Log in to Discord with your client's DISCORD_TOKEN
+    client.login(DISCORD_TOKEN);
 }
-

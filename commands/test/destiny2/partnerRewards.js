@@ -1,11 +1,21 @@
-const { bungieAPIKey, bungieRootURI } = require('../../../config.js');
-const { SlashCommandBuilder, bold, italic } = require('discord.js');
+// import global functions
+const { SlashCommandBuilder, bold, blockQuote } = require('discord.js');
 const date = require('date-and-time');
-const endpoint = '/Tokens/Rewards/BungieRewards';
 const axios = require('axios');
+
+// import local functions
+const { generateEndpointString } = require('../../../utilities/generateEndpoint');
+
+// import constants
+const { rootURI, endpoints } = require('../../../constants/bungieEndpoints.json');
+
+// assign constants
+const { BUNGIE_API_KEY } = process.env;
+const endpointObj = endpoints.getBungieRewards;
+
 const axiosConfig = {
     headers: {
-        'X-API-Key': bungieAPIKey
+        'X-API-Key': BUNGIE_API_KEY
     }
 };
 
@@ -19,8 +29,11 @@ module.exports = {
 };
 
 async function getPartnerRewards(interaction) {
-    let reply = "Rewards currently on Bungie's website:\n\n";
-    const url = bungieRootURI + endpoint;
+    let prefix = "Rewards currently on Bungie's website:\n\n";
+    let reply = '';
+
+    const endpoint = generateEndpointString(endpointObj);
+    const url = rootURI + endpoint;
 
     const resp = await axios.get(url, axiosConfig);
     const rewardResp = resp.data.Response;
@@ -37,5 +50,6 @@ async function getPartnerRewards(interaction) {
         reply += bold(displayProps?.Name + ` (Expires: ${expireDate})`);
         reply += `\n${props?.Description}\n\n`;
     }
-    interaction.reply(reply);
+
+    interaction.reply(prefix + blockQuote(reply));
 }

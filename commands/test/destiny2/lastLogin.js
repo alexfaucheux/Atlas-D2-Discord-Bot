@@ -1,12 +1,22 @@
-const { getProfiles } = require('../../../utilities/getProfiles.js');
-const { bungieAPIKey, bungieRootURI } = require('../../../config.js');
-const { SlashCommandBuilder } = require('discord.js');
-const date = require('date-and-time');
+// Import global functions
 const axios = require('axios');
+const date = require('date-and-time');
+const { SlashCommandBuilder } = require('discord.js');
+
+// Import local functions
+const { getProfiles } = require('../../../utilities/getProfiles');
+const { generateEndpointString } = require('../../../utilities/generateEndpoint.js');
+
+// Import constants
+const { rootURI, endpoints } = require('../../../constants/bungieEndpoints.json');
+
+// Assign constants
+const { BUNGIE_API_KEY } = process.env;
+const profileEndpoint = endpoints.getDestinyProfile;
 
 const axiosConfig = {
     headers: {
-        'X-API-Key': bungieAPIKey
+        'X-API-Key': BUNGIE_API_KEY
     }
 };
 
@@ -31,22 +41,34 @@ async function getLastLogin(interaction) {
     const lastPlayedList = [];
 
     if (fullName.length != 2 || fullName[1].length != 4) {
-        interaction.reply('```Invalid name. Please include the 4 digit code. e.g. Destiny#1234```');
+        interaction.reply({
+            content: 'Invalid name. Please include the 4 digit code. e.g. Destiny#1234',
+            ephemeral: true
+        });
         return;
     }
 
     const profiles = await getProfiles(bungieName);
 
+    // Iterates each profile returned
     for (const profile of profiles) {
-        console.log(profile);
-        const endpoint = `/Destiny2/${profile.type}/Profile/${profile.id}/?components=100`;
-        const url = bungieRootURI + endpoint;
+        profileEndpoint.pathParams.membershipType.value = profile.type;
+        profileEndpoint.pathParams.destinyMembershipId.value = profile.id;
+        const endpoint = generateEndpointString(profileEndpoint);
+
+        // Get profile details
+        const url = rootURI + endpoint;
         const resp = await axios.get(url, axiosConfig);
         const dateLastPlayed = resp.data.Response?.profile?.data?.dateLastPlayed;
 
         if (dateLastPlayed) {
             lastPlayedList.push(dateLastPlayed);
         }
+    }
+
+    if (!lastPlayedList.length) {
+        interaction.reply({ content: 'No data available for this request.', ephemeral: true });
+        return;
     }
 
     lastPlayedList.sort((a, b) => b - a);
@@ -56,6 +78,6 @@ async function getLastLogin(interaction) {
     lastPlayedDate = new Date(lastPlayedDate.getTime() - offset * 60 * 1000);
     lastPlayedDate = date.format(lastPlayedDate, 'MM/DD/YYYY');
 
-    const reply = `\`\`\`Last Login for ${bungieName}: ${lastPlayedDate}\`\`\``;
+    const reply = `Last Login for ${bungieName}: ${lastPlayedDate}`;
     interaction.reply(reply);
 }
