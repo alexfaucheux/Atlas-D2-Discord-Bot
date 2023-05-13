@@ -6,3 +6,4 @@ package-lock.json
 manifest
 tweets
 generateDefaultEndpoints.js
+twint-zero/go.mod

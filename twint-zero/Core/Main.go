@@ -5,14 +5,14 @@ import (
 )
 
 var (
-	weeks int = 5
+	weeks int = 4
 	condition bool   = true
 	cursor    string = ""
 )
 
 func Main(Query *string, Instance *string, Format *string) {
 	(*Query) = url.QueryEscape(*Query)
-	for i := 0; i < weeks; i++ {
+	for i := 0; i < weeks && condition; i++ {
 		condition = Scrape(Request(Query, Instance, &cursor), Format, &cursor)
 	}
 }
