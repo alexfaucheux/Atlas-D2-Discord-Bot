@@ -28,7 +28,8 @@ const config = {
 
 // If ran directly, create manifest files
 if (require.main === module) {
-    const manifestPath = path.join(__dirname, 'manifest');
+    const parentDir = path.dirname(__dirname);
+    const manifestPath = path.join(parentDir, 'manifest');
     createManifestFiles(manifestPath);
 }
 
