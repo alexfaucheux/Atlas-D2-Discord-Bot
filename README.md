@@ -27,8 +27,3 @@ A Discord bot server that delivers Destiny 2 discord news.
 - Run the command ```npm run initialize``` in the terminal in the root directory.
   - Make sure you have Node and Go installed before running this command!
 - Once initialized, you can start the server using the command ```npm start```
-
-
-### Testing server is up
-
-Join the testing Discord server [here](https://discord.gg/HpDsKKGGRd)
