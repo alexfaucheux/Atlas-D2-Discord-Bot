@@ -30,7 +30,7 @@ async function getLatestTweet(interaction) {
     const query = await collection.find({twitId: tweet.id}).toArray();
 
     if (query.length) {
-        interaction.reply({content: 'Latest Prime Gaming news already posted!', ephemeral: true});
+        interaction.reply({content: 'Latest Bungie Help tweet already posted!', ephemeral: true});
         return;
     }
 
