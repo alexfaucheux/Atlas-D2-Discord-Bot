@@ -29,6 +29,11 @@ function getCommandFiles(fileToFolderPath, subfolder) {
     const parentDir = path.dirname(__dirname);
     let foldersPath = path.join(parentDir, 'commands');
     foldersPath = path.join(foldersPath, subfolder);
+
+    if (!fs.existsSync(foldersPath)) {
+        fs.mkdirSync(foldersPath);
+    }
+
     const commandFolders = fs.readdirSync(foldersPath);
     let commandFiles = [];
 
