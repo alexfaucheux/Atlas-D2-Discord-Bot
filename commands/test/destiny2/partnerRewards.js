@@ -7,6 +7,7 @@ const axios = require('axios');
 const { generateEndpointString } = require('../../../utilities/generateEndpoint');
 
 // import constants
+const { mongoClient } = require('../../../modules/db.js');
 const { rootURI, endpoints } = require('../../../constants/bungieEndpoints.json');
 
 // assign constants
@@ -29,6 +30,9 @@ module.exports = {
 };
 
 async function getPartnerRewards(interaction) {
+    const collection = mongoClient.collections.rewards;
+    const recordsToInsert = [];
+
     let prefix = "Rewards currently on Bungie's website:\n\n";
     let reply = '';
 
@@ -39,17 +43,33 @@ async function getPartnerRewards(interaction) {
     const rewardResp = resp.data.Response;
 
     for (const reward in rewardResp) {
+        const q = await collection.find({ _id: reward }).toArray();
         const displayProps = rewardResp[reward].RewardDisplayProperties;
         const objProps = rewardResp[reward].ObjectiveDisplayProperties;
         const props = objProps || displayProps;
 
+        if (!q.length) {
+            const rec = {
+                _id: reward,
+                name: props.Name,
+                description: props.description,
+                imgURL: props.ImagePath
+            };
+            recordsToInsert.push(rec);
+        }
+
         let expireDate = new Date(
             rewardResp[reward].UserRewardAvailabilityModel.AvailabilityModel.RedemptionEndDate
         );
+
         expireDate = date.format(expireDate, 'MM/DD/YYYY');
-        reply += bold(displayProps?.Name + ` (Expires: ${expireDate})`);
+        reply += bold(props?.Name + ` (Expires: ${expireDate})`);
         reply += `\n${props?.Description}\n\n`;
     }
 
-    interaction.reply(prefix + blockQuote(reply));
+    if (recordsToInsert.length) {
+        collection.insertMany(recordsToInsert);
+    }
+
+    interaction.reply({content: prefix + blockQuote(reply), ephemeral: true});
 }

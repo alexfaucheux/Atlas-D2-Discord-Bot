@@ -49,5 +49,5 @@ function main() {
 
     writeLine(consoleStr);
     deployCommands(commands);
-    replaceLine(consoleStr + 'Complete\n');
+    replaceLine(consoleStr + 'done\n');
 }

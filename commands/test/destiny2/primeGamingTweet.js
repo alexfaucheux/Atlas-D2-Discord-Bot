@@ -1,5 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder, hyperlink } = require('discord.js');
 const { getPrimeGamingTweets } = require('../../../utilities/twitter-scraper');
+
+const { mongoClient } = require('../../../modules/db.js');
 const {
     twitPrimeURL,
     twitPrimeIconURL,
@@ -20,8 +22,18 @@ async function getLatestTweet(interaction) {
         const text = tweet.text.toLowerCase();
         return text.includes('destiny') && text.includes('spr.ly');
     });
-
+    
     const tweet = tweets[0];
+    const collection = mongoClient.collections.tweets;
+    const query = await collection.find({twitId: tweet.id}).toArray();
+
+    if (query.length) {
+        interaction.reply({content: 'Latest Prime Gaming news already posted!', ephemeral: true});
+        return;
+    }
+
+    collection.insertOne({twitId: tweet.id, url: tweet.url, author: tweet.fullname, obj: tweet})
+
     const timestamp = new Date(tweet.timestamp.split('·').join(''));
     const textValue = tweet.text
         .replace('@DestinyTheGame', hyperlink('@DestinyTheGame', twitMainURL))

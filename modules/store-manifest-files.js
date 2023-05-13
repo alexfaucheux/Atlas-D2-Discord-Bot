@@ -44,7 +44,7 @@ async function createManifestFiles(manifestPath) {
     const printProgress = (progress) => {
         let progressLine = `Writing manifest files... ${progress}/${manifestSize}`;
         if (progress == manifestSize) {
-            progressLine += ' Complete\n';
+            progressLine += ' done\n';
         }
         replaceLine(progressLine);
     };
