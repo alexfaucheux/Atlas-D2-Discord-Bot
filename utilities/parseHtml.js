@@ -11,7 +11,6 @@ async function parseHtml(htmlContent) {
         htmlContent = `<html>${htmlContent}</html>`;
     }
     let result = await HTMLParser.default(htmlContent, false);
-    // console.log(JSON.stringify(result));
     return generateStr({ parent: null, content: result.content, index: 0 }, '', 0);
 }
 
@@ -20,31 +19,33 @@ async function parseHtml(htmlContent) {
 function generateStr(contentObj, str, listLevel) {
     let contentItem;
     let contentIndex;
+    let contentParent;
     try {
         contentIndex = contentObj.index;
         contentItem = contentObj.content[contentIndex];
+        contentParent = contentObj.parent;
         if (!contentItem) {
             throw new Error('Content Item Not Defined');
         }
     } catch (e) {
         // Enters here when index out of bounds or undefined content
         // No parent or null index, return completed string
-        if (!contentObj || !contentObj.parent) {
+        if (!contentObj || !contentParent) {
             return str;
         }
 
         listLevel = listLevel ? listLevel - 1 : 0;
 
         // Continue traversing parent
-        contentObj.parent.index++;
-        return generateStr(contentObj.parent, str, listLevel);
+        contentParent.index++;
+        return generateStr(contentParent, str, listLevel);
     }
 
     switch (contentItem.type) {
         case 'h1':
         case 'h2':
             contentObj.index++;
-            str += '\n' + underscore(bold(contentItem.content[0]) + '\n\n');
+            str += '\n' + underscore(bold(contentItem.content[0])) + '\n\n';
             return generateStr(contentObj, str, listLevel);
 
         case 'h3':
@@ -55,7 +56,9 @@ function generateStr(contentObj, str, listLevel) {
 
         case 'ul':
             listLevel++;
-            str = str.trim() + '\n';
+            if (contentParent?.content[contentParent.index]?.type == 'ul') {
+                str = str.trim() + '\n';
+            }
             break;
 
         case 'li':
@@ -73,8 +76,8 @@ function generateStr(contentObj, str, listLevel) {
 
     // No content == bottom of tree == body text
     str += contentItem;
-    const parentIndex = contentObj.parent?.index;
-    const parentItem = contentObj.parent?.content[parentIndex];
+    const parentIndex = contentParent?.index;
+    const parentItem = contentParent?.content[parentIndex];
 
     // Add extra spacing if a list element
     if (parentItem?.type == 'li') {
@@ -82,6 +85,6 @@ function generateStr(contentObj, str, listLevel) {
     }
 
     // contentItem has no content, return to and traverse parent
-    contentObj.parent.index++;
-    return generateStr(contentObj.parent, str, listLevel);
+    contentParent.index++;
+    return generateStr(contentParent, str, listLevel);
 }
