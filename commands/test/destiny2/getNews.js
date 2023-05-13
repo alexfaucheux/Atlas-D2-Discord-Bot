@@ -45,7 +45,7 @@ async function getNews(interaction) {
 
     // Get latest news in feed
     // Possible TODO: Check latest few
-    let news = newsFeed.filter(news => news.Title.toLowerCase().includes('hotfix'))[0];
+    let news = newsFeed[0];
     const title = news.Title.toLowerCase();
 
     // Do not post news if it is community focus
