@@ -6,8 +6,8 @@ const fs = require('node:fs');
 dotenv.config();
 
 // Import local functions
-const { connectMongoDB } = require('./modules/connect-db.js');
 const { getAllCommands } = require('./utilities/getCommands.js');
+const { startMongoDB, closeMongoDB } = require('./modules/db.js');
 const { writeLine, replaceLine } = require('./utilities/consoleLineMethods.js');
 
 const { DISCORD_TOKEN } = process.env;
@@ -17,9 +17,18 @@ if (require.main === module) {
 }
 
 async function main() {
-    writeLine('Connecting to MongoDB...');
-    await connectMongoDB().catch(console.dir);
-    replaceLine('Connecting to MongoDB... Complete\n');
+    const mongoConnectStr = 'Connecting to MongoDB...';
+
+    try {
+        writeLine(mongoConnectStr);
+        await startMongoDB();
+        replaceLine(mongoConnectStr + ' done\n');
+    } catch (e) {
+        await closeMongoDB();
+        replaceLine(mongoConnectStr + ' FAILED\n')
+        console.error('Unable to connect to MongoDB. Exiting...\n' + e + '\n');
+        return;
+    }
 
     // Create a new client instance
     const client = new Client({ intents: [GatewayIntentBits.Guilds] });

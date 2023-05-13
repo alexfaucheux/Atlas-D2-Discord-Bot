@@ -43,7 +43,7 @@ async function getTweets(query) {
 }
 
 async function generateTweetFiles() {
-    const stdout = scrape();
+    const stdout = scrape('from:BungieHelp');
     const tweets = stdout.split('\n');
     for (const tweet of tweets) {
         let tweetObj;

@@ -7,3 +7,4 @@ manifest
 tweets
 generateDefaultEndpoints.js
 twint-zero/go.mod
+playground-1.mongodb.js

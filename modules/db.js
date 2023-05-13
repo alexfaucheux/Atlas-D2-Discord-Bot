@@ -1,6 +1,7 @@
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const { MONGODB_USER, MONGODB_PASS } = process.env;
 const mongoURL = `mongodb+srv://${MONGODB_USER}:${MONGODB_PASS}@destiny2-discord-bot-cl.jzodvan.mongodb.net/?retryWrites=true&w=majority`;
+const dbName = 'atlas-D2'
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(mongoURL, {
@@ -11,18 +12,24 @@ const client = new MongoClient(mongoURL, {
     }
 });
 
-async function run() {
-    try {
-        // Connect the client to the server	(optional starting in v4.7)
-        await client.connect();
-        // Send a ping to confirm a successful connection
-        await client.db('admin').command({ ping: 1 });
-    } finally {
-        // Ensures that the client will close when you finish/error
-        await client.close();
-    }
+const mongoClient = {
+    db: null,
+    collections: {}
+}
+
+async function start() {
+    await client.connect();
+    const db = mongoClient.db = client.db(dbName);
+    const cols = mongoClient.collections;
+
+    cols.users = db.collection('users');
+    cols.tweets = db.collection('tweets');
+    cols.rewards = db.collection('rewards');
+    cols.bungieNews = db.collection('news');
 }
 
 module.exports = {
-    connectMongoDB: async () => run().catch(console.dir)
+    startMongoDB: async () => await start(),
+    closeMongoDB: async () => await client.close(),
+    mongoClient
 };
