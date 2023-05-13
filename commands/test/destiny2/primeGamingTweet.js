@@ -16,28 +16,26 @@ module.exports = {
 };
 
 async function getLatestTweet(interaction) {
-    const tweets = await getPrimeGamingTweets();
-    let tweet;
-    for (const tweetObj of tweets) {
-        const text = tweetObj.text.toLowerCase();
-        if (text.includes('destiny') && text.includes('spr.ly')) {
-            tweet = tweetObj;
-            break;
-        }
-    }
+    const tweets = (await getPrimeGamingTweets()).filter((tweet) => {
+        const text = tweet.text.toLowerCase();
+        return text.includes('destiny') && text.includes('spr.ly');
+    });
 
-    let embedMessage;
-
+    const tweet = tweets[0];
     const timestamp = new Date(tweet.timestamp.split('·').join(''));
     const textValue = tweet.text
         .replace('@DestinyTheGame', hyperlink('@DestinyTheGame', twitMainURL))
         .replace('@DestinytheGame', hyperlink('@DestinyTheGame', twitMainURL));
-    // .replace(shortLink, hyperlink(shortLink, shortLink));
 
+    let embedMessage;
     try {
         embedMessage = new EmbedBuilder()
             .setColor(0xff33e1)
-            .setAuthor({ name: tweet.fullname, twitPrimeIconURL: twitPrimeIconURL, url: twitPrimeURL })
+            .setAuthor({
+                name: tweet.fullname,
+                twitPrimeIconURL: twitPrimeIconURL,
+                url: twitPrimeURL
+            })
             .setTitle('Prime Gaming Announcement')
             .setURL(tweet.url)
             .setDescription(textValue)
