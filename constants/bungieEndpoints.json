@@ -58,13 +58,13 @@
             "bodyProps": {
                 "displayName": {
                     "type": "string",
-                    "default": "nightlock73",
+                    "default": null,
                     "value": null,
                     "required": true
                 },
                 "displayNameCode": {
                     "type": "integer",
-                    "default": 3589,
+                    "default": null,
                     "value": null,
                     "required": true
                 }
