@@ -1,4 +1,6 @@
-const { Events, quote } = require('discord.js');
+const { Events, ActionRowBuilder, quote } = require('discord.js');
+const { isAuthenticated, authButton } = require('../modules/auth.js');
+const auth = require('../modules/auth.js');
 
 module.exports = {
     name: Events.InteractionCreate,
@@ -9,7 +11,7 @@ module.exports = {
 };
 
 async function executeInteraction(interaction) {
-	// Exits if the interation is not a slash command via chat
+    // Exits if the interation is not a slash command via chat
     if (!interaction.isChatInputCommand()) {
         return;
     }
@@ -21,10 +23,23 @@ async function executeInteraction(interaction) {
         return;
     }
 
+    const username = interaction.user.tag;
+    const authenticated = await isAuthenticated(username);
+
+    if (command.oauth && !authenticated) {
+        const row = new ActionRowBuilder().addComponents(authButton(username));
+        interaction.reply({
+            content: 'To use this command, you must authorized with Bungie first. Please login and try again.',
+            ephemeral: true,
+            components: [row]
+        });
+        return;
+    }
+
     try {
         await command.execute(interaction);
     } catch (error) {
-		console.error(`Unabled to execute command.\n${error}`);
+        console.error(`Unabled to execute command.\n${error}`);
         await handleInteractionError(interaction, error);
     }
 }
@@ -32,9 +47,9 @@ async function executeInteraction(interaction) {
 async function handleInteractionError(interaction, error) {
     let con;
     if (500 <= error.response?.status < 600) {
-        con = 'Oops!  Looks like this service is unavailable right now.  Please try again later.'
+        con = 'Oops!  Looks like this service is unavailable right now.  Please try again later.';
     } else {
-        con = 'There was an error while executing this command!'
+        con = 'There was an error while executing this command!';
     }
     const errorObj = {
         content: quote(con),

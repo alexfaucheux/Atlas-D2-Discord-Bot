@@ -1,25 +1,60 @@
 const axios = require('axios');
 const { BUNGIE_AUTH_ID, BUNGIE_AUTH_SECRET } = process.env;
 const { oauthTokenURI } = require('../constants/bungieValues.json');
+const { mongoClient } = require('../modules/db.js');
+const { ButtonBuilder, ButtonStyle } = require('discord.js');
 
 module.exports = {
+    exchangeToken,
     refreshToken,
-    exchangeToken
+    isAuthenticated,
+    authButton: (username) => {
+        const [user, code] = username.split('#');
+        return new ButtonBuilder()
+            .setLabel('Login at Bungie')
+            .setURL(`https://localhost:8443/oauth?user=${user}&code=${code}`)
+            .setStyle(ButtonStyle.Link);
+    }
 };
 
-async function refreshToken(collection, username) {
-    const query = await collection.find({ username: username }).toArray();
-    const token = query[0].refreshToken;
-    const tokenObj = { refresh_token: token };
-
+async function exchangeToken(username, code) {
+    const tokenObj = { code: code };
+    const collection = mongoClient.collections.auth;
     const authData = await makeTokenReq(tokenObj);
     await updateUserAuth(authData, collection, username);
 }
 
-async function exchangeToken(collection, username, code) {
-    const tokenObj = { code: code };
+async function refreshToken(username) {
+    const collection = mongoClient.collections.auth;
+    const query = await collection.find({ username: username }).toArray();
+
+    const token = query[0].refreshToken;
+    const tokenObj = { refresh_token: token };
     const authData = await makeTokenReq(tokenObj);
     await updateUserAuth(authData, collection, username);
+}
+
+async function isAuthenticated(username) {
+    const now = Date.now();
+    const collection = mongoClient.collections.auth;
+    const query = await collection.find({ username: username }).toArray();
+
+    if (!query.length) {
+        return false;
+    }
+
+    const userAuth = query[0];
+
+    if (now < userAuth.accessExpDate) {
+        return true;
+    }
+
+    if (now < userAuth.refreshExpDate) {
+        await refreshToken(collection, username);
+        return true;
+    }
+
+    return false;
 }
 
 async function makeTokenReq(tokenObj) {
@@ -41,9 +76,10 @@ async function makeTokenReq(tokenObj) {
 }
 
 async function updateUserAuth(data, collection, username) {
-    const expireDate = new Date(Date.now() + data.expires_in * 60000);
     const refreshExpDate = new Date(Date.now() + data.refresh_expires_in * 60000);
+    const expireDate = new Date(Date.now() + data.expires_in * 60000);
     const query = { username: username };
+    const opts = { upsert: true };
     const update = {
         $set: {
             username: username,
@@ -53,10 +89,6 @@ async function updateUserAuth(data, collection, username) {
             accessExpDate: expireDate,
             refreshExpDate: refreshExpDate
         }
-    };
-
-    const opts = {
-        upsert: true
     };
 
     await collection.updateOne(query, update, opts);
