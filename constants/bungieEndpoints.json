@@ -89,7 +89,7 @@
             "queryParams": {
                 "components": {
                     "type": "integerArray",
-                    "default": "100",
+                    "default": "100,200",
                     "value": null,
                     "required": true
                 }
@@ -242,6 +242,59 @@
             "queryParams": {},
             "bodyProps": {},
             "oauth": false
+        },
+        "getActivityHistory": {
+            "method": "get",
+            "path": "/Destiny2/{membershipType}/Account/{destinyMembershipId}/Character/{characterId}/Stats/Activities/",
+            "pathParams": {
+                "membershipType": {
+                    "type": "integer",
+                    "value": null,
+                    "default": null
+                },
+                "destinyMembershipId": {
+                    "type": "string",
+                    "value": null,
+                    "default": null
+                },
+                "characterId": {
+                    "type": "string",
+                    "value": null,
+                    "default": null
+                }
+            },
+            "queryParams": {},
+            "bodyProps": {},
+            "oauth": false
+        },
+        "getCarnageReport": {
+            "method": "get",
+            "path": "/Destiny2/Stats/PostGameCarnageReport/{activityId}/",
+            "pathParams": {
+                "activityId": {
+                    "type": "integer",
+                    "value": null,
+                    "default": null
+                }
+            },
+            "queryParams": {},
+            "bodyProps": {},
+            "oauth": false
+        },
+        "getUserById": {
+            "method": "get",
+            "path": " /User/GetBungieNetUserById/{id}/",
+            "pathParams": {
+                "id": {
+                    "type": "integer",
+                    "value": null,
+                    "default": null
+                }
+            },
+            "queryParams": {},
+            "bodyProps": {},
+            "oauth": false
         }
+
     }
 }

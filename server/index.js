@@ -60,7 +60,7 @@ async function authenticate(req, res) {
 
     const authenticated = await isAuthenticated(username);
 
-    if (authenticated) {
+    if (false) {
         res.send('Already authenticated! You may close this window.');
         return;
     }

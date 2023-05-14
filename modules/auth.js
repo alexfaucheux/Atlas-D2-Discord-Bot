@@ -1,8 +1,10 @@
 const axios = require('axios');
-const { BUNGIE_AUTH_ID, BUNGIE_AUTH_SECRET } = process.env;
-const { oauthTokenURI } = require('../constants/bungieValues.json');
 const { mongoClient } = require('../modules/db.js');
+const { BUNGIE_AUTH_ID, BUNGIE_AUTH_SECRET } = process.env;
 const { ButtonBuilder, ButtonStyle } = require('discord.js');
+const { oauthTokenURI } = require('../constants/bungieValues.json');
+const { rootURI, endpoints } = require('../constants/bungieEndpoints.json');
+const { generateEndpointString } = require('../utilities/generateEndpoint');
 
 module.exports = {
     exchangeToken,
@@ -78,18 +80,31 @@ async function makeTokenReq(tokenObj) {
 async function updateUserAuth(data, collection, username) {
     const refreshExpDate = new Date(Date.now() + data.refresh_expires_in * 60000);
     const expireDate = new Date(Date.now() + data.expires_in * 60000);
+    const memId = data.membership_id;
+
+    const user = await getUserData(memId);
+    const bungieName = user.data.uniqueName;
     const query = { username: username };
     const opts = { upsert: true };
     const update = {
         $set: {
+            memId: memId,
             username: username,
-            memId: data.membership_id,
-            accessToken: data.access_token,
-            refreshToken: data.refresh_token,
+            bungieName: bungieName,
             accessExpDate: expireDate,
-            refreshExpDate: refreshExpDate
+            refreshExpDate: refreshExpDate,
+            accessToken: data.access_token,
+            refreshToken: data.refresh_token
         }
     };
 
     await collection.updateOne(query, update, opts);
+}
+
+async function getUserData(id) {
+    const { getUserById } = endpoints;
+    getUserById.pathParams.id.value = id;
+    const endpoint = await generateEndpointString(getUserById);
+    const url = rootURI + endpoint;
+    return axios.get(url, axiosConfig);
 }
