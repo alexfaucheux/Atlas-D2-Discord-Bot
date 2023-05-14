@@ -18,7 +18,8 @@ const axiosConfig = {
 };
 
 module.exports = {
-    getProfiles
+    getProfiles,
+    getMainProfile
 };
 
 async function getProfiles(bungieName) {
@@ -36,11 +37,18 @@ async function getProfiles(bungieName) {
     const resp = await axios.post(url, axiosBody, axiosConfig);
 
     const bungieResp = resp.data.Response;
-    for (const platform in bungieResp) {
-        const memType = bungieResp[platform].membershipType;
-        const memId = bungieResp[platform].membershipId;
-        profiles.push({ type: memType, id: memId });
+    for (const key in bungieResp) {
+        const platform = bungieName[key];
+        const memType = platform.membershipType;
+        const memId = platform.membershipId;
+        const main = !!platform.applicableMembershipTypes.length;
+        profiles.push({ type: memType, id: memId, main: main });
     }
 
     return profiles;
+}
+
+async function getMainProfile(bungieName) {
+    const profiles = await getProfiles(bungieName);
+    return profiles.filter(profile => profile.main)[0];
 }
