@@ -21,15 +21,10 @@ const axiosConfig = {
 };
 
 module.exports = {
-    data: new SlashCommandBuilder()
-        .setName('rewards')
-        .setDescription('Gets partner reward details.'),
-    async execute(interaction) {
-        await getPartnerRewards(interaction);
-    }
+    postRewards
 };
 
-async function getPartnerRewards(interaction) {
+async function postRewards(channel) {
     const collection = mongoClient.collections.rewards;
     const recordsToInsert = [];
 

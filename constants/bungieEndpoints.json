@@ -283,7 +283,7 @@
         },
         "getUserById": {
             "method": "get",
-            "path": " /User/GetBungieNetUserById/{id}/",
+            "path": "/User/GetBungieNetUserById/{id}/",
             "pathParams": {
                 "id": {
                     "type": "integer",

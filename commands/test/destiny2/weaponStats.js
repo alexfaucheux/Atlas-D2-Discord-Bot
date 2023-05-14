@@ -5,6 +5,7 @@ const { generateEndpointString } = require('../../../utilities/generateEndpoint.
 const { getDestinyProfile, getActivityHistory, getCarnageReport } = endpoints;
 const { mongoClient } = require('../../../modules/db.js');
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { BUNGIE_API_KEY } = process.env;
 
 const axiosConfig = {
     headers: {

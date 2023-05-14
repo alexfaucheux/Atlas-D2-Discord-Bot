@@ -15,8 +15,8 @@ async function executeInteraction(interaction) {
     if (!interaction.isChatInputCommand()) {
         return;
     }
-
-    const command = interaction.client.commands.get(interaction.commandName);
+    const client = interaction.client
+    const command = client.commands.get(interaction.commandName);
 
     if (!command) {
         console.error(`No command matching ${interaction.commandName} was found.`);
@@ -26,7 +26,7 @@ async function executeInteraction(interaction) {
     const username = interaction.user.tag;
     const authenticated = await isAuthenticated(username);
 
-    if (command.oauth && !authenticated) {
+    if (!authenticated) {
         const row = new ActionRowBuilder().addComponents(authButton(username));
         interaction.reply({
             content: 'To use this command, you must authorized with Bungie first. Please login and try again.',

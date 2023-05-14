@@ -11,7 +11,7 @@ function generateEndpointString(endpoint) {
         const paramObj = pathParams[param];
 
         if (paramObj.value === null) {
-            console.log(`[WARNING] No value specified for path param: ${param}. Using default value: ${paramObj.default}`);
+            // console.log(`[WARNING] No value specified for path param: ${param}. Using default value: ${paramObj.default}`);
             paramObj.value = paramObj.default;
         }
 
@@ -26,11 +26,11 @@ function generateEndpointString(endpoint) {
         const paramObj = queryParams[param];
 
         if (paramObj.value === null) {
-            console.log(`[WARNING] No value specified for query param: ${param}. Using default value: ${paramObj.default}`);
+            // console.log(`[WARNING] No value specified for query param: ${param}. Using default value: ${paramObj.default}`);
             paramObj.value = paramObj.default;
         }
 
-        if (paramObj.value === null) {
+        if (paramObj.value === null && paramObj.required) {
             throw new Error('Query parameter object needs a value')
         }
 

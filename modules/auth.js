@@ -1,6 +1,6 @@
 const axios = require('axios');
 const { mongoClient } = require('../modules/db.js');
-const { BUNGIE_AUTH_ID, BUNGIE_AUTH_SECRET } = process.env;
+const { BUNGIE_AUTH_ID, BUNGIE_AUTH_SECRET, BUNGIE_API_KEY } = process.env;
 const { ButtonBuilder, ButtonStyle } = require('discord.js');
 const { oauthTokenURI } = require('../constants/bungieValues.json');
 const { rootURI, endpoints } = require('../constants/bungieEndpoints.json');
@@ -83,7 +83,7 @@ async function updateUserAuth(data, collection, username) {
     const memId = data.membership_id;
 
     const user = await getUserData(memId);
-    const bungieName = user.data.uniqueName;
+    const bungieName = user.data.Response.uniqueName;
     const query = { username: username };
     const opts = { upsert: true };
     const update = {
@@ -102,9 +102,14 @@ async function updateUserAuth(data, collection, username) {
 }
 
 async function getUserData(id) {
+    const axiosConfig = {
+        headers: {
+            'X-API-KEY': BUNGIE_API_KEY
+        }
+    };
     const { getUserById } = endpoints;
     getUserById.pathParams.id.value = id;
     const endpoint = await generateEndpointString(getUserById);
     const url = rootURI + endpoint;
-    return axios.get(url, axiosConfig);
+    return await axios.get(url, axiosConfig);
 }
