@@ -22,6 +22,7 @@ async function start() {
     const db = mongoClient.db = client.db(dbName);
     const cols = mongoClient.collections;
 
+    cols.auth = db.collection('auth');
     cols.users = db.collection('users');
     cols.tweets = db.collection('tweets');
     cols.rewards = db.collection('rewards');
