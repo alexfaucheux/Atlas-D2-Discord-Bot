@@ -23,6 +23,6 @@ async function startServices(client) {
     postNews(newsChannel, hotfixChannel);
     
     setTimeout(() => {
-        startServices();
+        startServices(client);
     }, minutesDelay * 60000)
 }
