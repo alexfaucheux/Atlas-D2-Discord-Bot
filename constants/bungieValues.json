@@ -1,6 +1,8 @@
 {
     "standardURI": "https://www.bungie.net",
     "apiURI": "https://www.bungie.net/Platform",
+    "oauthURI": "https://www.bungie.net/en/OAuth/Authorize",
+    "oauthTokenURI": "https://www.bungie.net/Platform/App/OAuth/token/",
     "twitIconURL": "https://pbs.twimg.com/profile_images/882030782276968448/fhGb6cpO_400x400.jpg",
     "twitHelpIconURL": "https://pbs.twimg.com/profile_images/1362463058132492289/vNe1WM28_400x400.jpg",
     "twitPrimeIconURL": "https://pbs.twimg.com/profile_images/1597629044975013888/OkLOOmJl_400x400.jpg",

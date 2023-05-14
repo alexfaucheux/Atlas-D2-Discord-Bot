@@ -1,10 +1,14 @@
-node_modules
 .env
-config.js
 .vscode
+*.key
+*.crt
+config.js
 package-lock.json
+twint-zero/go.mod
+
+node_modules
 manifest
 tweets
+
 generateDefaultEndpoints.js
-twint-zero/go.mod
 playground-1.mongodb.js
