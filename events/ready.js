@@ -1,4 +1,4 @@
-const { Events } = require('discord.js');
+const { Events, ActivityType } = require('discord.js');
 const { postHelpTweet, postPrimeTweet } = require('../services/postTweet');
 const { postNews } = require('../services/postNews');
 const { writeLine, replaceLine } = require('../utilities/consoleLineMethods.js');
@@ -16,10 +16,10 @@ module.exports = {
 };
 
 async function executeServices(client) {
-    const hotfixChannel = client.channels.cache.get('1105963741536849941');
-    const maintChannel = client.channels.cache.get('1106404992195231784');
-    const newsChannel = client.channels.cache.get('1106404370586812586');
-    const minutesDelay = 30;
+    const hotfixChannel = client.channels.cache.get('1107412400954679346');
+    const maintChannel = client.channels.cache.get('1107412524867002518');
+    const newsChannel = client.channels.cache.get('1107412292120875168');
+    const minutesDelay = 5;
 
     postHelpTweet(maintChannel);
     postPrimeTweet(newsChannel);
@@ -29,3 +29,5 @@ async function executeServices(client) {
         executeServices(client);
     }, minutesDelay * 60000)
 }
+
+async function rotateActivities() {}

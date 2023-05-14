@@ -10,36 +10,35 @@ module.exports = {
     exchangeToken,
     refreshToken,
     isAuthenticated,
-    authButton: (username) => {
-        const [user, code] = username.split('#');
+    authButton: (userId) => {
         return new ButtonBuilder()
             .setLabel('Login at Bungie')
-            .setURL(`https://localhost:8443/oauth?user=${user}&code=${code}`)
+            .setURL(`https://localhost:8443/oauth?id=${userId}`)
             .setStyle(ButtonStyle.Link);
     }
 };
 
-async function exchangeToken(username, code) {
+async function exchangeToken(user, code) {
     const tokenObj = { code: code };
     const collection = mongoClient.collections.auth;
     const authData = await makeTokenReq(tokenObj);
-    await updateUserAuth(authData, collection, username);
+    await updateUserAuth(authData, collection, user);
 }
 
-async function refreshToken(username) {
+async function refreshToken(user) {
     const collection = mongoClient.collections.auth;
-    const query = await collection.find({ username: username }).toArray();
+    const query = await collection.find({ userId: user.id }).toArray();
 
     const token = query[0].refreshToken;
     const tokenObj = { refresh_token: token };
     const authData = await makeTokenReq(tokenObj);
-    await updateUserAuth(authData, collection, username);
+    await updateUserAuth(authData, collection, user);
 }
 
-async function isAuthenticated(username) {
+async function isAuthenticated(userId) {
     const now = Date.now();
     const collection = mongoClient.collections.auth;
-    const query = await collection.find({ username: username }).toArray();
+    const query = await collection.find({ userId: userId }).toArray();
 
     if (!query.length) {
         return false;
@@ -52,7 +51,7 @@ async function isAuthenticated(username) {
     }
 
     if (now < userAuth.refreshExpDate) {
-        await refreshToken(collection, username);
+        await refreshToken(user);
         return true;
     }
 
@@ -77,19 +76,22 @@ async function makeTokenReq(tokenObj) {
     return resp.data;
 }
 
-async function updateUserAuth(data, collection, username) {
-    const refreshExpDate = new Date(Date.now() + data.refresh_expires_in * 60000);
-    const expireDate = new Date(Date.now() + data.expires_in * 60000);
+async function updateUserAuth(data, collection, user) {
+    const userId = user.id;
+    const username = user.tag;
     const memId = data.membership_id;
+    const bungieUser = await getUserData(memId);
+    const expireDate = new Date(Date.now() + data.expires_in * 60000);
+    const refreshExpDate = new Date(Date.now() + data.refresh_expires_in * 60000);
 
-    const user = await getUserData(memId);
-    const bungieName = user.data.Response.uniqueName;
-    const query = { username: username };
+    const bungieName = bungieUser.data.Response.uniqueName;
+    const query = { userId: userId };
     const opts = { upsert: true };
     const update = {
         $set: {
-            memId: memId,
+            userId: userId,
             username: username,
+            bungieId: memId,
             bungieName: bungieName,
             accessExpDate: expireDate,
             refreshExpDate: refreshExpDate,

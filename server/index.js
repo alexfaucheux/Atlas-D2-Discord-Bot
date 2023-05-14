@@ -7,12 +7,13 @@ const https = require('https');
 const express = require('express');
 const { nanoid } = require('nanoid');
 
-const { writeLine, replaceLine } = require('../utilities/consoleLineMethods.js');
 const { startMongoDB, closeMongoDB } = require('../modules/db.js');
 const { generateEndpointString } = require('../utilities/generateEndpoint.js');
+const { writeLine, replaceLine } = require('../utilities/consoleLineMethods.js');
 const { exchangeToken, refreshToken, isAuthenticated } = require('../modules/auth.js');
 const { oauthURI } = require('../constants/bungieValues.json');
-const { BUNGIE_AUTH_ID } = process.env;
+const { Client, GatewayIntentBits } = require('discord.js');
+const { BUNGIE_AUTH_ID, DISCORD_TOKEN } = process.env;
 
 const app = express();
 const httpPort = 8080;
@@ -22,7 +23,7 @@ const key = fs.readFileSync('./selfsigned.key', 'utf-8');
 const cert = fs.readFileSync('./selfsigned.crt', 'utf-8');
 const httpsServer = https.createServer({ key: key, cert: cert }, app);
 
-let username;
+let user;
 
 startServer();
 
@@ -54,11 +55,13 @@ async function startServer() {
 }
 
 async function authenticate(req, res) {
-    const user = req.query.user;
-    const code = req.query.code;
-    username = user + '#' + code;
+    const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+    client.login(DISCORD_TOKEN);
+    
+    const userId = req.query.id;
+    user = await client.users.fetch(userId);
 
-    const authenticated = await isAuthenticated(username);
+    const authenticated = await isAuthenticated(userId);
 
     if (authenticated) {
         res.send('Already authenticated! You may close this window.');
@@ -91,17 +94,17 @@ async function callbackAuth(req, res) {
     const code = req.query.code;
 
     try {
-        await exchangeToken(username, code);
+        await exchangeToken(user, code);
         res.send('Authenticated successfully. You may now close this window.');
     } catch (error) {
-        console.error('Access Token Error', error.message);
+        console.error('Access Token Error:\n', error);
         res.send('Oh no! An error occured during authentication.');
     }
 }
 
 async function refreshAuth(req, res) {
     try {
-        await refreshToken(username);
+        await refreshToken(user);
         res.send('Authenticated successfully. You may now close this window.');
     } catch (error) {
         console.error('Access Token Error', error.message);

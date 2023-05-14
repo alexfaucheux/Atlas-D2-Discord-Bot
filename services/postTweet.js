@@ -78,7 +78,7 @@ async function postPrimeTweet(channel) {
             .setColor(0xff33e1)
             .setAuthor({
                 name: tweet.fullname,
-                twitPrimeIconURL: twitPrimeIconURL,
+                iconURL: twitPrimeIconURL,
                 url: twitPrimeURL
             })
             .setTitle('Prime Gaming Announcement')

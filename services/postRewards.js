@@ -66,5 +66,5 @@ async function postRewards(channel) {
         collection.insertMany(recordsToInsert);
     }
 
-    interaction.reply({content: prefix + blockQuote(reply), ephemeral: true});
+    interactiont.reply({content: prefix + blockQuote(reply), ephemeral: true});
 }
