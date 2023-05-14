@@ -38,10 +38,10 @@ async function getProfiles(bungieName) {
 
     const bungieResp = resp.data.Response;
     for (const key in bungieResp) {
-        const platform = bungieName[key];
+        const platform = bungieResp[key];
         const memType = platform.membershipType;
         const memId = platform.membershipId;
-        const main = !!platform.applicableMembershipTypes.length;
+        const main = !!platform.applicableMembershipTypes?.length;
         profiles.push({ type: memType, id: memId, main: main });
     }
 
