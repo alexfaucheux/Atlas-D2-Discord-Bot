@@ -1,7 +1,8 @@
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const { MONGODB_USER, MONGODB_PASS } = process.env;
-const mongoURL = `mongodb+srv://${MONGODB_USER}:${MONGODB_PASS}@destiny2-discord-bot-cl.jzodvan.mongodb.net/?retryWrites=true&w=majority`;
+
 const dbName = 'atlas-D2'
+const mongoURL = `mongodb+srv://${MONGODB_USER}:${MONGODB_PASS}@destiny2-discord-bot-cl.jzodvan.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(mongoURL, {

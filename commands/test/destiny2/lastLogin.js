@@ -4,8 +4,8 @@ const date = require('date-and-time');
 const { SlashCommandBuilder } = require('discord.js');
 
 // Import local functions
-const { getProfiles } = require('../../../utilities/getProfiles');
-const { generateEndpointString } = require('../../../utilities/generateEndpoint.js');
+const { getProfiles } = require('../../../utilities/profile.js');
+const { generateEndpointString } = require('../../../utilities/endpointGenerator.js');
 
 // Import constants
 const { rootURI, endpoints } = require('../../../constants/bungieEndpoints.json');

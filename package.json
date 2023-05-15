@@ -26,7 +26,8 @@
     "fs": "^0.0.1-security",
     "html-to-json-parser": "^1.1.0",
     "jsdom": "^22.0.0",
-    "mongoose": "^7.1.0"
+    "mongoose": "^7.1.0",
+    "nanoid": "^3.0.0"
   },
   "devDependencies": {
     "eslint": "^8.39.0"

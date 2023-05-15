@@ -4,7 +4,7 @@ const date = require('date-and-time');
 const axios = require('axios');
 
 // import local functions
-const { generateEndpointString } = require('../../../utilities/generateEndpoint');
+const { generateEndpointString } = require('../../../utilities/endpointGenerator.js');
 
 // import constants
 const { mongoClient } = require('../../../modules/db.js');

@@ -6,7 +6,7 @@ const fs = require('node:fs');
 dotenv.config();
 
 // Import local functions
-const { getAllCommands } = require('./utilities/getCommands.js');
+const { getAllCommands } = require('./utilities/commands.js');
 const { startMongoDB, closeMongoDB } = require('./modules/db.js');
 const { writeLine, replaceLine } = require('./utilities/consoleLineMethods.js');
 

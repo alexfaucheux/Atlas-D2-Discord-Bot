@@ -2,7 +2,7 @@
 const { REST, Routes } = require('discord.js');
 
 // Import local functions
-const { getAllCommands, getTestCommands, getLiveCommands } = require('../utilities/getCommands.js');
+const { getAllCommands, getLiveCommands } = require('../utilities/commands.js');
 const { writeLine, replaceLine } = require('../utilities/consoleLineMethods.js');
 
 // If ran directly, convert .env properties to environment vars
@@ -37,9 +37,6 @@ function main() {
     const consoleStr = `Deploying commands in ${runMode} mode... `;
 
     switch (deployType) {
-        case 'test':
-            commands = getTestCommands('deploy');
-            break;
         case 'live':
             commands = getLiveCommands('deploy');
             break;

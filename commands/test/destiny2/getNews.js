@@ -3,8 +3,8 @@ const axios = require('axios');
 const { SlashCommandBuilder, EmbedBuilder, italic } = require('discord.js');
 
 // Import local functions
-const { parseHtml } = require('../../../utilities/parseHtml.js');
-const { generateEndpointString } = require('../../../utilities/generateEndpoint.js');
+const { parseHtml } = require('../../../utilities/htmlParser.js');
+const { generateEndpointString } = require('../../../utilities/endpointGenerator.js');
 
 // Import constants
 const { mongoClient } = require('../../../modules/db.js');

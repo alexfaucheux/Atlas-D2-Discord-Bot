@@ -2,7 +2,7 @@
 const axios = require('axios');
 
 // Import local functions
-const { generateEndpointString } = require('./generateEndpoint');
+const { generateEndpointString } = require('./endpointGenerator.js');
 
 // Import constants
 const { rootURI, endpoints } = require('../constants/bungieEndpoints.json');
@@ -50,5 +50,5 @@ async function getProfiles(bungieName) {
 
 async function getMainProfile(bungieName) {
     const profiles = await getProfiles(bungieName);
-    return profiles.filter(profile => profile.main)[0];
+    return profiles.filter((profile) => profile.main)[0];
 }

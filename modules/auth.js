@@ -4,7 +4,7 @@ const { BUNGIE_AUTH_ID, BUNGIE_AUTH_SECRET, BUNGIE_API_KEY } = process.env;
 const { ButtonBuilder, ButtonStyle } = require('discord.js');
 const { oauthTokenURI } = require('../constants/bungieValues.json');
 const { rootURI, endpoints } = require('../constants/bungieEndpoints.json');
-const { generateEndpointString } = require('../utilities/generateEndpoint');
+const { generateEndpointString } = require('../utilities/endpointGenerator.js');
 
 module.exports = {
     exchangeToken,

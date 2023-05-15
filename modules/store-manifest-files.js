@@ -8,7 +8,7 @@ const { resetLine, replaceLine } = require('../utilities/consoleLineMethods.js')
 
 // Import constants
 const { rootURI, endpoints } = require('../constants/bungieEndpoints.json');
-const { generateEndpointString } = require('../utilities/generateEndpoint.js');
+const { generateEndpointString } = require('../utilities/endpointGenerator.js');
 
 // If ran directly, convert .env properties to environment vars
 if (require.main == module) {
