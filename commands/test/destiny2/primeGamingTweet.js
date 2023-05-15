@@ -25,9 +25,9 @@ async function getLatestTweet(interaction) {
     
     const tweet = tweets[0];
     const collection = mongoClient.collections.tweets;
-    const query = await collection.find({twitId: tweet.id}).toArray();
+    const query = await collection.find({twitId: tweet?.id}).toArray();
 
-    if (query.length) {
+    if (query.length || !tweet) {
         interaction.reply({content: 'Latest Prime Gaming tweet already posted!', ephemeral: true});
         return;
     }

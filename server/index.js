@@ -64,11 +64,11 @@ async function startServer() {
     app.get('/oauth/error', respError);
 
     httpsServer.listen(httpsPort, () => {
-        console.log(`Listening on port ${httpsPort} (https)`);
+        // console.log(`Listening on port ${httpsPort} (https)`);
     });
 
     httpServer.listen(httpPort, () => {
-        console.log(`Listening on port ${httpPort} (http)`);
+        // console.log(`Listening on port ${httpPort} (http)`);
     });
 }
 

@@ -19,8 +19,15 @@ A Discord bot server that delivers Destiny 2 discord news.
   - ```CLIENT_ID```: The client id for your discord bot.  Get this from settings/OAuth2 in your bot application.
   - ```CLIENT_SECRET```: The client secret for your discord bot. In the same section as client Id.
   - ```BUNGIE_API_KEY```: The API key that bungie gives you when you sign up for an application.
+  - ```BUNGIE_AUTH_ID```: The client id present in Bungie application.
+  - ```BUNGIE_AUTH_SECRET```: The client secret in Bungie application.
   - ```MONGODB_USER```: The username for a user in your MongoDB cluster.
   - ```MONGODB_PASS```: The password for a user in your MongoDB cluster.
+  - ```TEST_SERVER_ID```: The password for a user in your MongoDB cluster.
+- To use oauth, you need to run the local express server. 
+  - You need to generate these files to run the server (openssl recommended):
+    - ```selfsigned.crt```
+    - ```selfsigned.key```
 
 ### Installation
 
