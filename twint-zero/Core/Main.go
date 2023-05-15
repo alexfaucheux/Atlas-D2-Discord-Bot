@@ -5,7 +5,7 @@ import (
 )
 
 var (
-	weeks int = 4
+	weeks int = 1
 	condition bool   = true
 	cursor    string = ""
 )
