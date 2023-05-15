@@ -35,10 +35,10 @@ async function refreshToken(user) {
     await updateUserAuth(authData, collection, user);
 }
 
-async function isAuthenticated(userId) {
+async function isAuthenticated(user) {
     const now = Date.now();
     const collection = mongoClient.collections.auth;
-    const query = await collection.find({ userId: userId }).toArray();
+    const query = await collection.find({ userId: user.id }).toArray();
 
     if (!query.length) {
         return false;

@@ -23,11 +23,11 @@ async function executeInteraction(interaction) {
         return;
     }
 
-    const userId = interaction.user.id;
-    const authenticated = await isAuthenticated(userId);
+    const user = interaction.user;
+    const authenticated = await isAuthenticated(user);
 
     if (!authenticated) {
-        const row = new ActionRowBuilder().addComponents(authButton(userId));
+        const row = new ActionRowBuilder().addComponents(authButton(user.id));
         interaction.reply({
             content: 'To use this command, you must authorized with Bungie first. Please login and try again.',
             ephemeral: true,

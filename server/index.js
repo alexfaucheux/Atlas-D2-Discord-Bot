@@ -61,7 +61,7 @@ async function authenticate(req, res) {
     const userId = req.query.id;
     user = await client.users.fetch(userId);
 
-    const authenticated = await isAuthenticated(userId);
+    const authenticated = await isAuthenticated(user);
 
     if (authenticated) {
         res.send('Already authenticated! You may close this window.');
