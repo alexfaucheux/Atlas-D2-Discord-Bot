@@ -30,7 +30,7 @@ function generateEndpointString(endpoint) {
             paramObj.value = paramObj.default;
         }
 
-        if (paramObj.value === null && paramObj.requireda) {
+        if (paramObj.value === null && paramObj.required) {
             throw new Error('Query parameter object needs a value')
         }
 
