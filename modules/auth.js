@@ -13,7 +13,7 @@ module.exports = {
     authButton: (userId) => {
         return new ButtonBuilder()
             .setLabel('Login at Bungie')
-            .setURL(`https://localhost:8443/oauth?id=${userId}`)
+            .setURL(`https://localhost:8443/oauth/authorize/${userId}`)
             .setStyle(ButtonStyle.Link);
     }
 };

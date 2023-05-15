@@ -8,7 +8,7 @@ const express = require('express');
 const { nanoid } = require('nanoid');
 
 const { startMongoDB, closeMongoDB } = require('../modules/db.js');
-const { generateEndpointString } = require('../utilities/generateEndpoint.js');
+const { generateEndpointString } = require('../utilities/endpointGenerator.js');
 const { writeLine, replaceLine } = require('../utilities/consoleLineMethods.js');
 const { exchangeToken, refreshToken, isAuthenticated } = require('../modules/auth.js');
 const { oauthURI } = require('../constants/bungieValues.json');
@@ -25,11 +25,23 @@ const httpsServer = https.createServer({ key: key, cert: cert }, app);
 
 let user;
 
-startServer();
+if (require.main === module) {
+    startServerWithMongo();
+}
 
-async function startServer() {
+module.exports = {
+    startServer
+}
+
+async function startServerWithMongo() {
+    const connected = await startMongo();
+    if (connected) {
+        startServer();
+    }
+}
+
+async function startMongo() {
     const mongoConnectStr = 'Connecting to MongoDB...';
-
     try {
         writeLine(mongoConnectStr);
         await startMongoDB();
@@ -38,33 +50,40 @@ async function startServer() {
         await closeMongoDB();
         replaceLine(mongoConnectStr + ' FAILED\n');
         console.error('Unable to connect to MongoDB. Exiting...\n' + e + '\n');
-        return;
+        return false;
     }
 
-    app.get('/oauth', authenticate);
-    app.get('/oauth-callback', callbackAuth);
-    app.get('/oauth-refresh', refreshAuth);
+    return true;
+}
+
+async function startServer() {
+    app.get('/oauth/authorize/:id', authenticate);
+    app.get('/oauth/callback', callbackAuth);
+    app.get('/oauth/refresh', refreshAuth);
+    app.get('/oauth/success/:auth', respSuccess);
+    app.get('/oauth/error', respError);
 
     httpsServer.listen(httpsPort, () => {
-        console.log(`Listening on https://localhost:${httpsPort}/oauth?user=MrOceanMan&code=3562`);
+        console.log(`Listening on port ${httpsPort} (https)`);
     });
 
     httpServer.listen(httpPort, () => {
-        console.log(`Listening on http://localhost:${httpPort}/oauth`);
+        console.log(`Listening on port ${httpPort} (http)`);
     });
 }
 
 async function authenticate(req, res) {
+    const userId = req.params.id;
+    let redirectUri = `https://localhost:${httpsPort}/oauth/callback`;
+    redirectUri = redirectUri.replace(':', '%3A').replace('/', '%2F');
     const client = new Client({ intents: [GatewayIntentBits.Guilds] });
-    client.login(DISCORD_TOKEN);
-    
-    const userId = req.query.id;
-    user = await client.users.fetch(userId);
 
+    client.login(DISCORD_TOKEN);
+    user = await client.users.fetch(userId);
     const authenticated = await isAuthenticated(user);
 
     if (authenticated) {
-        res.send('Already authenticated! You may close this window.');
+        res.redirect("/oauth/success/0")
         return;
     }
 
@@ -81,7 +100,7 @@ async function authenticate(req, res) {
                 value: BUNGIE_AUTH_ID
             },
             redirect_uri: {
-                value: 'https%3A%2F%2Flocalhost%3A8443%2Foauth-callback'
+                value: redirectUri
             }
         }
     });
@@ -95,19 +114,32 @@ async function callbackAuth(req, res) {
 
     try {
         await exchangeToken(user, code);
-        res.send('Authenticated successfully. You may now close this window.');
+        res.redirect('/oauth/success/1')
     } catch (error) {
         console.error('Access Token Error:\n', error);
-        res.send('Oh no! An error occured during authentication.');
+        res.redirect('/oauth/error')
     }
 }
 
 async function refreshAuth(req, res) {
     try {
         await refreshToken(user);
-        res.send('Authenticated successfully. You may now close this window.');
+        res.redirect('/oauth/success/1')
     } catch (error) {
-        console.error('Access Token Error', error.message);
-        res.send('Oh no! An error occured during authentication.');
+        console.error('Access Token Error:\n', error);
+        res.redirect('/oauth/error');
     }
+}
+
+async function respSuccess(req, res) {
+    const auth = req.params.auth;
+    if (auth == 1) {
+        res.send('Authenticated successfully! You may now close this window.');
+    } else {
+        res.send('Already authenticated! You may now close this window.');
+    }
+}
+
+async function respError(req, res) {
+    res.send('Oh no! An error occurred during authentication.');
 }

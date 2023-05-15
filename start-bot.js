@@ -9,6 +9,8 @@ dotenv.config();
 const { getAllCommands } = require('./utilities/commands.js');
 const { startMongoDB, closeMongoDB } = require('./modules/db.js');
 const { writeLine, replaceLine } = require('./utilities/consoleLineMethods.js');
+const { startServer } = require('./server/index.js');
+const { start } = require('node:repl');
 
 const { DISCORD_TOKEN } = process.env;
 
@@ -18,6 +20,7 @@ if (require.main === module) {
 
 async function main() {
     const mongoConnectStr = 'Connecting to MongoDB...';
+    const serverStr = 'Starting server... ';
 
     try {
         writeLine(mongoConnectStr);
@@ -27,6 +30,16 @@ async function main() {
         await closeMongoDB();
         replaceLine(mongoConnectStr + ' FAILED\n')
         console.error('Unable to connect to MongoDB. Exiting...\n' + e + '\n');
+        return;
+    }
+
+    try {
+        writeLine(serverStr);
+        await startServer();
+        replaceLine(serverStr + ' done\n');
+    } catch (e) {
+        replaceLine(serverStr + ' FAILED\n')
+        console.error('Unable to start server. Exiting...\n' + e + '\n');
         return;
     }
 
