@@ -31,7 +31,7 @@ function generateEndpointString(endpoint) {
         }
 
         if (paramObj.value === null && paramObj.required) {
-            throw new Error('Query parameter object needs a value')
+            throw new Error(`Query parameter ${param} needs a value.`)
         }
 
         endpointStr += !endpointStr.includes('?') ? '?' : '&';
