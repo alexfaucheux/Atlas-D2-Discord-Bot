@@ -56,8 +56,13 @@ async function postPrimeTweet(channel) {
         const text = tweet.text.toLowerCase();
         return text.includes('destiny') && text.includes('spr.ly');
     });
-    
+
     const tweet = tweets[0];
+
+    if (!tweet) {
+         return;
+    }
+
     const collection = mongoClient.collections.tweets;
     const query = await collection.find({twitId: tweet.id}).toArray();
 
