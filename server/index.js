@@ -31,7 +31,7 @@ if (require.main === module) {
 
 module.exports = {
     startServer
-}
+};
 
 async function startServerWithMongo() {
     const connected = await startMongo();
@@ -62,6 +62,7 @@ async function startServer() {
     app.get('/oauth/refresh', refreshAuth);
     app.get('/oauth/success/:auth', respSuccess);
     app.get('/oauth/error', respError);
+    app.get('/healthz', (req, res) => res.send('ok'));
 
     httpsServer.listen(httpsPort, () => {
         // console.log(`Listening on port ${httpsPort} (https)`);
@@ -83,7 +84,7 @@ async function authenticate(req, res) {
     const authenticated = await isAuthenticated(user);
 
     if (authenticated) {
-        res.redirect("/oauth/success/0")
+        res.redirect('/oauth/success/0');
         return;
     }
 
@@ -115,17 +116,17 @@ async function callbackAuth(req, res) {
 
     try {
         await exchangeToken(user, code);
-        res.redirect('/oauth/success/1')
+        res.redirect('/oauth/success/1');
     } catch (error) {
         console.error('Access Token Error:\n', error);
-        res.redirect('/oauth/error')
+        res.redirect('/oauth/error');
     }
 }
 
 async function refreshAuth(req, res) {
     try {
         await refreshToken(user);
-        res.redirect('/oauth/success/1')
+        res.redirect('/oauth/success/1');
     } catch (error) {
         console.error('Access Token Error:\n', error);
         res.redirect('/oauth/error');

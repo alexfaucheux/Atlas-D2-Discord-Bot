@@ -1,6 +1,8 @@
+const readline = require('readline');
+
 const resetLine = () => {
-    process.stdout.clearLine();
-    process.stdout.cursorTo(0);
+    readline.clearLine(process.stdout);
+    readline.cursorTo(process.stdout, 0);
 }
 
 const writeLine = (str) => {
