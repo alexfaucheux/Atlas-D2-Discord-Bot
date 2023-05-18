@@ -5,7 +5,7 @@ const { SlashCommandBuilder } = require('discord.js');
 
 // Import local functions
 const { getProfiles } = require('../../../utilities/profile.js');
-const { generateEndpointString } = require('../../../utilities/endpointGenerator.js');
+const { generateEndpoint } = require('../../../utilities/endpointGenerator.js');
 
 // Import constants
 const { rootURI, endpoints } = require('../../../constants/bungieEndpoints.json');
@@ -54,10 +54,10 @@ async function getLastLogin(interaction) {
     for (const profile of profiles) {
         profileEndpoint.pathParams.membershipType.value = profile.type;
         profileEndpoint.pathParams.destinyMembershipId.value = profile.id;
-        const endpoint = generateEndpointString(profileEndpoint);
+        const endpoint = generateEndpoint(profileEndpoint);
 
         // Get profile details
-        const url = rootURI + endpoint;
+        const url = rootURI + endpoint.path;
         const resp = await axios.get(url, axiosConfig);
         const dateLastPlayed = resp.data.Response?.profile?.data?.dateLastPlayed;
 

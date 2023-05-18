@@ -4,7 +4,7 @@ const { SlashCommandBuilder, EmbedBuilder, italic } = require('discord.js');
 
 // Import local functions
 const { parseHtml } = require('../../../utilities/htmlParser.js');
-const { generateEndpointString } = require('../../../utilities/endpointGenerator.js');
+const { generateEndpoint } = require('../../../utilities/endpointGenerator.js');
 
 // Import constants
 const { mongoClient } = require('../../../modules/db.js');
@@ -37,10 +37,10 @@ async function getNews(interaction) {
     let body = '';
 
     // Generate endpoint using default values
-    const endpoint = generateEndpointString(destinyNews);
+    const endpoint = generateEndpoint(destinyNews);
 
     // Get latest news feed
-    const url = rootURI + endpoint;
+    const url = rootURI + endpoint.path;
     const res = await axios.get(url, axiosConfig);
     const newsFeed = res.data.Response.NewsArticles.filter(
         (article) => !article.Title.toLowerCase().includes('community focus')

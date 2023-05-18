@@ -1,11 +1,14 @@
 module.exports = {
-    generateEndpointString
+    generateEndpoint
 }
 
-function generateEndpointString(endpoint) {
+function generateEndpoint(endpoint) {
     let endpointStr = endpoint.path;
+    const bodyProps = endpoint.bodyProps;
     const pathParams = endpoint.pathParams;
     const queryParams = endpoint.queryParams;
+    const returnObj = {};
+    const body = {};
 
     for (const param in pathParams) {
         const paramObj = pathParams[param];
@@ -38,5 +41,21 @@ function generateEndpointString(endpoint) {
         endpointStr += `${param}=${paramObj.value}`;
     }
 
-    return endpointStr;
+    for (const prop in bodyProps) {
+        const propObj = bodyProps[prop];
+
+        if (propObj.value === null) {
+            propObj.value = propObj.default;
+        }
+
+        if (propObj.value === null && propObj.required) {
+            throw new Error(`Body property ${prop} needs a value.`)
+        }
+
+        body[prop] = propObj.value;
+    }
+
+    returnObj.path = endpointStr;
+    returnObj.body = body;
+    return returnObj;
 }

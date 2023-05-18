@@ -8,7 +8,7 @@ const express = require('express');
 const { nanoid } = require('nanoid');
 
 const { startMongoDB, closeMongoDB } = require('../modules/db.js');
-const { generateEndpointString } = require('../utilities/endpointGenerator.js');
+const { generateEndpoint } = require('../utilities/endpointGenerator.js');
 const { writeLine, replaceLine } = require('../utilities/consoleLineMethods.js');
 const { exchangeToken, refreshToken, isAuthenticated } = require('../modules/auth.js');
 const { oauthURI } = require('../constants/bungieValues.json');
@@ -89,7 +89,7 @@ async function authenticate(req, res) {
 
     const state = nanoid();
 
-    const endpoint = generateEndpointString({
+    const endpoint = generateEndpoint({
         path: oauthURI,
         pathParams: {},
         queryParams: {
@@ -102,11 +102,12 @@ async function authenticate(req, res) {
             redirect_uri: {
                 value: redirectUri
             }
-        }
+        },
+        bodyProps: {}
     });
 
     // Redirect example using Express (see http://expressjs.com/api.html#res.redirect)
-    res.redirect(endpoint);
+    res.redirect(endpoint.path);
 }
 
 async function callbackAuth(req, res) {

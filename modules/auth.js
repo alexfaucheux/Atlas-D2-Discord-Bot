@@ -4,7 +4,7 @@ const { BUNGIE_AUTH_ID, BUNGIE_AUTH_SECRET, BUNGIE_API_KEY } = process.env;
 const { ButtonBuilder, ButtonStyle } = require('discord.js');
 const { oauthTokenURI } = require('../constants/bungieValues.json');
 const { rootURI, endpoints } = require('../constants/bungieEndpoints.json');
-const { generateEndpointString } = require('../utilities/endpointGenerator.js');
+const { generateEndpoint } = require('../utilities/endpointGenerator.js');
 
 module.exports = {
     exchangeToken,
@@ -19,7 +19,7 @@ module.exports = {
 };
 
 async function exchangeToken(user, code) {
-    const tokenObj = { code: code };
+    const tokenObj = {  grant_type: 'authorization_code', code: code };
     const collection = mongoClient.collections.auth;
     const authData = await makeTokenReq(tokenObj);
     await updateUserAuth(authData, collection, user);
@@ -30,7 +30,7 @@ async function refreshToken(user) {
     const query = await collection.find({ userId: user.id }).toArray();
 
     const token = query[0].refreshToken;
-    const tokenObj = { refresh_token: token };
+    const tokenObj = { grant_type: 'refresh_token', refresh_token: token };
     const authData = await makeTokenReq(tokenObj);
     await updateUserAuth(authData, collection, user);
 }
@@ -67,7 +67,6 @@ async function makeTokenReq(tokenObj) {
 
     const axiosBody = {
         ...tokenObj,
-        grant_type: 'authorization_code',
         client_id: BUNGIE_AUTH_ID,
         client_secret: BUNGIE_AUTH_SECRET
     };
@@ -111,7 +110,7 @@ async function getUserData(id) {
     };
     const { getUserById } = endpoints;
     getUserById.pathParams.id.value = id;
-    const endpoint = await generateEndpointString(getUserById);
-    const url = rootURI + endpoint;
+    const endpoint = generateEndpoint(getUserById);
+    const url = rootURI + endpoint.path;
     return await axios.get(url, axiosConfig);
 }

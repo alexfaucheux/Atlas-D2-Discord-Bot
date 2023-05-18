@@ -2,7 +2,7 @@
 const axios = require('axios');
 
 // Import local functions
-const { generateEndpointString } = require('./endpointGenerator.js');
+const { generateEndpoint } = require('./endpointGenerator.js');
 
 // Import constants
 const { rootURI, endpoints } = require('../constants/bungieEndpoints.json');
@@ -26,15 +26,13 @@ async function getProfiles(bungieName) {
     const profiles = [];
     const [name, nameCode] = bungieName.split('#');
 
+    endpointObj.bodyProps.displayName.value = name;
+    endpointObj.bodyProps.displayNameCode.value = nameCode;
+    
     // Generate endpoint using default values
-    const endpoint = generateEndpointString(endpointObj);
-    const url = rootURI + endpoint;
-
-    const axiosBody = {
-        displayName: name,
-        displayNameCode: nameCode
-    };
-    const resp = await axios.post(url, axiosBody, axiosConfig);
+    const url = rootURI + endpoint.path;
+    const endpoint = generateEndpoint(endpointObj);
+    const resp = await axios.post(url, endpoint.body, axiosConfig);
 
     const bungieResp = resp.data.Response;
     for (const key in bungieResp) {

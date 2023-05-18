@@ -4,7 +4,7 @@ const date = require('date-and-time');
 const axios = require('axios');
 
 // import local functions
-const { generateEndpointString } = require('../../../utilities/endpointGenerator.js');
+const { generateEndpoint } = require('../../../utilities/endpointGenerator.js');
 
 // import constants
 const { mongoClient } = require('../../../modules/db.js');
@@ -36,8 +36,8 @@ async function getPartnerRewards(interaction) {
     let prefix = "Rewards currently on Bungie's website:\n\n";
     let reply = '';
 
-    const endpoint = generateEndpointString(endpointObj);
-    const url = rootURI + endpoint;
+    const endpoint = generateEndpoint(endpointObj);
+    const url = rootURI + endpoint.path;
 
     const resp = await axios.get(url, axiosConfig);
     const rewardResp = resp.data.Response;

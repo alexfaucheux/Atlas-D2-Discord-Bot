@@ -1,7 +1,7 @@
 const axios = require('axios');
 const { rootURI, endpoints } = require('../../../constants/bungieEndpoints.json');
 const { getMainProfile } = require('../../../utilities/profile.js');
-const { generateEndpointString } = require('../../../utilities/endpointGenerator.js');
+const { generateEndpoint } = require('../../../utilities/endpointGenerator.js');
 const { getDestinyProfile, getActivityHistory, getCarnageReport } = endpoints;
 const { mongoClient } = require('../../../modules/db.js');
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');

@@ -8,7 +8,7 @@ const { resetLine, replaceLine } = require('../utilities/consoleLineMethods.js')
 
 // Import constants
 const { rootURI, endpoints } = require('../constants/bungieEndpoints.json');
-const { generateEndpointString } = require('../utilities/endpointGenerator.js');
+const { generateEndpoint } = require('../utilities/endpointGenerator.js');
 
 // If ran directly, convert .env properties to environment vars
 if (require.main == module) {
@@ -73,8 +73,8 @@ async function createManifestFiles(manifestPath) {
 
 async function getManifestUrls() {
     const manifestMap = {};
-    const endpoint = generateEndpointString(manifestEndpoint);
-    const url = rootURI + endpoint;
+    const endpoint = generateEndpoint(manifestEndpoint);
+    const url = rootURI + endpoint.path;
     const result = await axios.get(url, config);
     const contentManifests = result.data.Response.jsonWorldComponentContentPaths.en;
 

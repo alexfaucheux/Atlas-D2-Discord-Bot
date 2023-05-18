@@ -25,6 +25,7 @@ async function start() {
 
     cols.auth = db.collection('auth');
     cols.users = db.collection('users');
+    cols.clans = db.collection('clans');
     cols.tweets = db.collection('tweets');
     cols.rewards = db.collection('rewards');
     cols.bungieNews = db.collection('news');
