@@ -41,7 +41,7 @@ async function postHelpTweet(channel) {
 
     const embedMessage = new EmbedBuilder()
         .setColor(0xff33e1)
-        .setAuthor({ name: tweet.fullname, twitHelpIconURL: twitHelpIconURL, url: twitHelpURL })
+        .setAuthor({ name: tweet.fullname, iconURL: twitHelpIconURL, url: twitHelpURL })
         .setTitle('Bungie Server Announcement')
         .setURL(tweet.url)
         .setDescription(textValue)
