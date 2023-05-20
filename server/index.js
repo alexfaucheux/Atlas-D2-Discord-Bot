@@ -13,12 +13,13 @@ const { writeLine, replaceLine } = require('../utilities/consoleLineMethods.js')
 const { exchangeToken, refreshToken, isAuthenticated } = require('../modules/auth.js');
 const { oauthURI } = require('../constants/bungieValues.json');
 const { Client, GatewayIntentBits } = require('discord.js');
-const { BUNGIE_AUTH_ID, DISCORD_TOKEN } = process.env;
+const { BUNGIE_AUTH_ID, DISCORD_TOKEN, PORT } = process.env;
 
 const app = express();
-const httpPort = process.env.PORT || 8080;
+const httpPort = PORT || 8080;
 const httpsPort = 8443;
 const httpServer = http.createServer(app);
+const uri = PORT ? 'https://atlas-d2-discord-bot.onrender.com' : 'https://localhost:' + httpsPort
 
 let user;
 
@@ -66,7 +67,7 @@ async function startServer() {
 
 async function authenticate(req, res) {
     const userId = req.params.id;
-    let redirectUri = `https://localhost:${httpsPort}/oauth/callback`;
+    let redirectUri = `${uri}/oauth/callback`;
     redirectUri = redirectUri.replace(':', '%3A').replace('/', '%2F');
     const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
