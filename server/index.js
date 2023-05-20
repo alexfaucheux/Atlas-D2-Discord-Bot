@@ -19,9 +19,6 @@ const app = express();
 const httpPort = process.env.PORT || 8080;
 const httpsPort = 8443;
 const httpServer = http.createServer(app);
-const key = fs.readFileSync('./selfsigned.key', 'utf-8');
-const cert = fs.readFileSync('./selfsigned.crt', 'utf-8');
-const httpsServer = https.createServer({ key: key, cert: cert }, app);
 
 let user;
 
@@ -64,13 +61,7 @@ async function startServer() {
     app.get('/oauth/error', respError);
     app.get('/healthz', (req, res) => res.send('ok'));
 
-    httpsServer.listen(httpsPort, () => {
-        // console.log(`Listening on port ${httpsPort} (https)`);
-    });
-
-    httpServer.listen(httpPort, () => {
-        // console.log(`Listening on port ${httpPort} (http)`);
-    });
+    httpServer.listen(httpPort, () => {});
 }
 
 async function authenticate(req, res) {
