@@ -1,5 +1,5 @@
 // import global functions
-const { SlashCommandBuilder, bold, blockQuote } = require('discord.js');
+const { bold, blockQuote } = require('discord.js');
 const date = require('date-and-time');
 const axios = require('axios');
 

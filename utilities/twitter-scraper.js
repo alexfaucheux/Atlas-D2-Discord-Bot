@@ -141,9 +141,9 @@ function getBodyTextWithHyperlinks($content) {
     while ($anchor.length > 0) {
         const uri = $anchor.attr('href');
         const url = uri.includes('http') ? uri : twitterRootURI + $anchor.attr('href');
-        const $anchorText = $anchor.prop('innerText');
-        const textLink = hyperlink($anchorText, url);
-        text = text.replace($anchorText, textLink);
+        const anchorText = $anchor.prop('innerText');
+        const textLink = hyperlink(anchorText, url);
+        text = text.replace(anchorText, textLink);
         $anchor = $anchor.next();
     }
 

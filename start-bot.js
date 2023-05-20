@@ -6,13 +6,15 @@ const fs = require('node:fs');
 dotenv.config();
 
 // Import local functions
-const { getAllCommands } = require('./utilities/commands.js');
+const { getTestCommands, getLiveCommands } = require('./utilities/commands.js');
 const { startMongoDB, closeMongoDB } = require('./modules/db.js');
 const { writeLine, replaceLine } = require('./utilities/consoleLineMethods.js');
 const { startServer } = require('./server/index.js');
-const { start } = require('node:repl');
 
-const { DISCORD_TOKEN } = process.env;
+const { TEST_DISCORD_TOKEN, DISCORD_TOKEN, PORT } = process.env;
+
+const discordToken = DISCORD_TOKEN
+// const discordToken = PORT ? DISCORD_TOKEN : TEST_DISCORD_TOKEN
 
 if (require.main === module) {
     main();
@@ -46,7 +48,11 @@ async function main() {
     // Create a new client instance
     const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
-    client.commands = getAllCommands('client');
+    if (PORT) {
+        client.commands = getLiveCommands('client');
+    } else {
+        client.commands = getTestCommands('client');
+    }
 
     const eventsPath = path.join(__dirname, 'events');
     const eventFiles = fs.readdirSync(eventsPath).filter((file) => file.endsWith('.js'));
@@ -62,5 +68,5 @@ async function main() {
     }
 
     // Log in to Discord with your client's DISCORD_TOKEN
-    client.login(DISCORD_TOKEN);
+    client.login(discordToken);
 }
