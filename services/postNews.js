@@ -1,6 +1,6 @@
 // Import global functions
 const axios = require('axios');
-const { SlashCommandBuilder, EmbedBuilder, italic } = require('discord.js');
+const { EmbedBuilder, italic } = require('discord.js');
 
 // Import local functions
 const { parseHtml } = require('../utilities/htmlParser.js');

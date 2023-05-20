@@ -2,6 +2,7 @@ const { Events, ActivityType } = require('discord.js');
 const { postHelpTweet, postPrimeTweet } = require('../services/postTweet');
 const { postNews } = require('../services/postNews');
 const { writeLine, replaceLine } = require('../utilities/consoleLineMethods.js');
+const { PORT } = process.env;
 
 module.exports = {
     name: Events.ClientReady,
@@ -21,13 +22,18 @@ async function executeServices(client) {
     const newsChannel = client.channels.cache.get('1107412292120875168');
     const minutesDelay = 1;
 
-    postHelpTweet(maintChannel);
-    postPrimeTweet(newsChannel);
-    postNews(newsChannel, hotfixChannel);
+    if (PORT) {
+        // Live services
+        postHelpTweet(maintChannel);
+        postPrimeTweet(newsChannel);
+        postNews(newsChannel, hotfixChannel);
+    } else {
+        // Test services
+    }
 
     setTimeout(() => {
         executeServices(client);
-    }, minutesDelay * 60000)
+    }, minutesDelay * 60000);
 }
 
 async function rotateActivities() {}

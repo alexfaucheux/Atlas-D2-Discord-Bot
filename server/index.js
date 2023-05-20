@@ -13,15 +13,21 @@ const { writeLine, replaceLine } = require('../utilities/consoleLineMethods.js')
 const { exchangeToken, refreshToken, isAuthenticated } = require('../modules/auth.js');
 const { oauthURI } = require('../constants/bungieValues.json');
 const { Client, GatewayIntentBits } = require('discord.js');
-const { BUNGIE_AUTH_ID, DISCORD_TOKEN, PORT } = process.env;
+const { BUNGIE_AUTH_ID, DISCORD_TOKEN, TEST_DISCORD_TOKEN, PORT } = process.env;
 
 const app = express();
-const httpPort = PORT || 8080;
+const key = PORT ? '' : fs.readFileSync('./selfsigned.key', 'utf-8');
+const cert = PORT ? '' : fs.readFileSync('./selfsigned.crt', 'utf-8');
+const httpsServer = PORT ? null : https.createServer({ key: key, cert: cert }, app);
+
 const httpsPort = 8443;
+const httpPort = PORT || 8080;
 const httpServer = http.createServer(app);
 const uri = PORT ? 'https://atlas-d2-discord-bot.onrender.com' : 'https://localhost:' + httpsPort
 
 let user;
+// const discordToken = PORT ? DISCORD_TOKEN : TEST_DISCORD_TOKEN;
+const discordToken = DISCORD_TOKEN;
 
 if (require.main === module) {
     startServerWithMongo();
@@ -63,6 +69,10 @@ async function startServer() {
     app.get('/healthz', (req, res) => res.send('ok'));
 
     httpServer.listen(httpPort, () => {});
+
+    if (!PORT) {
+        httpsServer.listen(httpsPort, () => {});
+    }
 }
 
 async function authenticate(req, res) {
@@ -71,7 +81,7 @@ async function authenticate(req, res) {
     redirectUri = redirectUri.replace(':', '%3A').replace('/', '%2F');
     const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
-    client.login(DISCORD_TOKEN);
+    client.login(discordToken);
     user = await client.users.fetch(userId);
     const authenticated = await isAuthenticated(user);
 

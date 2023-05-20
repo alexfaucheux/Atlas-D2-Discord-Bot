@@ -6,13 +6,14 @@ const { Collection } = require('discord.js');
 module.exports = {
     getAllCommands: (type) => getCommands(type, 'all'),
     getLiveCommands: (type) => getCommands(type, 'live'),
+    getTestCommands: (type) => getCommands(type, 'test')
 };
 
 function getCommands(type, subfolder) {
     const fileToFolderPath = {};
     let commandFiles;
 
-    if (subfolder == 'live') {
+    if (subfolder == 'live' || subfolder == 'test') {
         commandFiles = getCommandFiles(fileToFolderPath, subfolder);
     } else {
         const liveFiles = getCommandFiles(fileToFolderPath, 'live');
