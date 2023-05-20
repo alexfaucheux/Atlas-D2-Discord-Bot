@@ -4,7 +4,6 @@
 *.crt
 config.js
 package-lock.json
-twint-zero/go.mod
 
 node_modules
 manifest

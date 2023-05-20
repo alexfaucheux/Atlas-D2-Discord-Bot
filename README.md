@@ -6,7 +6,7 @@ A Discord bot server that delivers Destiny 2 discord news.
 
 ### Requirements Before Use
 
-- Install the latest versions of Node and Go.
+- Install the latest version of Node.
 - You will need to set up your own bot application.
   - Create a bot here: <https://discord.com/developers/applications>.
 - You will need to create an application with Bungie.
@@ -32,5 +32,4 @@ A Discord bot server that delivers Destiny 2 discord news.
 ### Installation
 
 - Run the command ```npm run initialize``` in the terminal in the root directory.
-  - Make sure you have Node and Go installed before running this command!
 - Once initialized, you can start the server using the command ```npm start```

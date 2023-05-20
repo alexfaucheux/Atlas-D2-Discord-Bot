@@ -1,100 +1,63 @@
 // Import global functions
-const { EmbedBuilder, hyperlink } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 
 // Import local functions
 const { getPrimeGamingTweets, getBungieTweets } = require('../utilities/twitter-scraper.js');
 
 // import constants
 const { mongoClient } = require('../modules/db.js');
-const {
-    twitHelpURL,
-    twitHelpIconURL,
-    helpForumURL,
-    twitFooterMsg,
-    twitPrimeURL,
-    twitPrimeIconURL,
-    twitMainURL
-} = require('../constants/bungieValues.json');
 
 module.exports = {
     postHelpTweet,
     postPrimeTweet
 };
 
-async function postHelpTweet(channel) {
+async function postHelpTweet(channel, interaction) {
     const tweets = await getBungieTweets();
-    const tweet = tweets[0];
-
-    const collection = mongoClient.collections.tweets;
-    const query = await collection.find({twitId: tweet.id}).toArray();
-
-    if (query.length) {
-        return;
-    }
-
-    collection.insertOne({twitId: tweet.id, url: tweet.url, author: tweet.fullname, obj: tweet})
-
-    const timestamp = new Date(tweet.timestamp.split('·').join(''));
-    const textValue =
-        tweet.text.replace('here: bungie.net/en/Forums/Topics/…', hyperlink('here', helpForumURL)) +
-        '.';
-
-    const embedMessage = new EmbedBuilder()
-        .setColor(0xff33e1)
-        .setAuthor({ name: tweet.fullname, iconURL: twitHelpIconURL, url: twitHelpURL })
-        .setTitle('Bungie Server Announcement')
-        .setURL(tweet.url)
-        .setDescription(textValue)
-        .setTimestamp(timestamp)
-        .setFooter({ text: twitFooterMsg });
-
-    channel.send({ embeds: [embedMessage] });
+    const title = 'Bungie Server Announcement';
+    postTweet(channel, tweets[0], title, interaction);
 }
 
-async function postPrimeTweet(channel) {
+async function postPrimeTweet(channel, interaction) {
     const tweets = (await getPrimeGamingTweets()).filter((tweet) => {
         const text = tweet.text.toLowerCase();
         return text.includes('destiny') && text.includes('spr.ly');
     });
+    const title = 'Prime Gaming Announcement';
+    postTweet(channel, tweets[0], title, interaction);
+}
 
-    const tweet = tweets[0];
-
-    if (!tweet) {
-         return;
-    }
-
+async function postTweet(channel, tweet, title, interaction) {
     const collection = mongoClient.collections.tweets;
-    const query = await collection.find({twitId: tweet.id}).toArray();
+    const query = await collection.find({ twitId: tweet?.id }).toArray();
+    const footerMsg = 'Content pulled from Twitter';
 
-    if (query.length) {
+    console.log(tweet);
+    if (query.length || !tweet) {
+        if (interaction) {
+            interaction.reply({
+                content: 'Latest tweet already posted!',
+                ephemeral: true
+            });
+        }
         return;
     }
 
-    collection.insertOne({twitId: tweet.id, url: tweet.url, author: tweet.fullname, obj: tweet})
+    collection.insertOne({ twitId: tweet.id, url: tweet.url, author: tweet.fullname, obj: tweet });
 
-    const timestamp = new Date(tweet.timestamp.split('·').join(''));
-    const textValue = tweet.text
-        .replace('@DestinyTheGame', hyperlink('@DestinyTheGame', twitMainURL))
-        .replace('@DestinytheGame', hyperlink('@DestinyTheGame', twitMainURL));
-
-    let embedMessage;
-    try {
-        embedMessage = new EmbedBuilder()
-            .setColor(0xff33e1)
-            .setAuthor({
-                name: tweet.fullname,
-                iconURL: twitPrimeIconURL,
-                url: twitPrimeURL
-            })
-            .setTitle('Prime Gaming Announcement')
-            .setURL(tweet.url)
-            .setDescription(textValue)
-            .setTimestamp(timestamp)
-            .setFooter({ text: 'Content pulled from Twitter' });
-    } catch (e) {
-        console.error(e);
-        throw e;
-    }
+    const embedMessage = new EmbedBuilder()
+        .setColor(0xff33e1)
+        .setAuthor({
+            name: tweet.fullname,
+            iconURL: tweet.avatarURL,
+            url: tweet.profileURL
+        })
+        .setTitle(title)
+        .setURL(tweet.url)
+        .setDescription(tweet.text)
+        .setTimestamp(tweet.timestamp)
+        .setFooter({ text: footerMsg })
+        .setImage(tweet.attachments[0]?.src);
 
     channel.send({ embeds: [embedMessage] });
 }
