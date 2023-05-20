@@ -6,7 +6,7 @@
   "scripts": {
     "start": "npm run deploy-run",
     "server": "node server/index.js",
-    "initialize": "npm update && npm install && node modules/store-manifest-files.js",
+    "initialize": "npm install && node modules/store-manifest-files.js",
     "deploy-run": "node modules/deploy-commands.js && node start-bot.js",
     "deploy-global": "node modules/deploy-commands.js -global -live",
     "deploy-global-run": "npm run deploy-global && node start-bot.js",
@@ -33,5 +33,8 @@
   },
   "devDependencies": {
     "eslint": "^8.39.0"
+  },
+  "engines": {
+    "node": ">=16.9"
   }
 }
