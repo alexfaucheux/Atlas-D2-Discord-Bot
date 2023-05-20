@@ -16,7 +16,7 @@ const { Client, GatewayIntentBits } = require('discord.js');
 const { BUNGIE_AUTH_ID, DISCORD_TOKEN } = process.env;
 
 const app = express();
-const httpPort = 8080;
+const httpPort = process.env.PORT || 8080;
 const httpsPort = 8443;
 const httpServer = http.createServer(app);
 const key = fs.readFileSync('./selfsigned.key', 'utf-8');
