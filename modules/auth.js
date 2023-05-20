@@ -1,6 +1,6 @@
 const axios = require('axios');
 const { mongoClient } = require('../modules/db.js');
-const { BUNGIE_AUTH_ID, BUNGIE_AUTH_SECRET, BUNGIE_API_KEY } = process.env;
+const { BUNGIE_AUTH_ID, BUNGIE_AUTH_SECRET, BUNGIE_API_KEY, PORT } = process.env;
 const { ButtonBuilder, ButtonStyle } = require('discord.js');
 const { oauthTokenURI } = require('../constants/bungieValues.json');
 const { rootURI, endpoints } = require('../constants/bungieEndpoints.json');
@@ -11,9 +11,10 @@ module.exports = {
     refreshToken,
     isAuthenticated,
     authButton: (userId) => {
+        const uri = PORT ? 'https://atlas-d2-discord-bot.onrender.com' : 'https://localhost:8443'
         return new ButtonBuilder()
             .setLabel('Login at Bungie')
-            .setURL(`https://localhost:8443/oauth/authorize/${userId}`)
+            .setURL(`${uri}/oauth/authorize/${userId}`)
             .setStyle(ButtonStyle.Link);
     }
 };

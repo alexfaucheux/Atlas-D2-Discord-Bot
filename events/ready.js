@@ -19,12 +19,12 @@ async function executeServices(client) {
     const hotfixChannel = client.channels.cache.get('1107412400954679346');
     const maintChannel = client.channels.cache.get('1107412524867002518');
     const newsChannel = client.channels.cache.get('1107412292120875168');
-    const minutesDelay = 5;
+    const minutesDelay = 1;
 
     postHelpTweet(maintChannel);
     postPrimeTweet(newsChannel);
     postNews(newsChannel, hotfixChannel);
-    
+
     setTimeout(() => {
         executeServices(client);
     }, minutesDelay * 60000)
