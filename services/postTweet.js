@@ -32,7 +32,6 @@ async function postTweet(channel, tweet, title, interaction) {
     const query = await collection.find({ twitId: tweet?.id }).toArray();
     const footerMsg = 'Content pulled from Twitter';
 
-    console.log(tweet);
     if (query.length || !tweet) {
         if (interaction) {
             interaction.reply({
