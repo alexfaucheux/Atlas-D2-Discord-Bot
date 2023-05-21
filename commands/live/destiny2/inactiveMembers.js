@@ -15,7 +15,8 @@ const axios = require('axios');
 const axiosConfig = {
     headers: {
         'X-API-Key': BUNGIE_API_KEY
-    }
+    },
+    timeout: 9000
 };
 
 module.exports = {
@@ -112,7 +113,7 @@ async function getLoginData(memberData, members) {
 
     for (const profileResp of profileRespList) {
         if (profileResp.status == 'rejected') {
-            console.error(profileResp.reason.data)
+            console.error(profileResp.reason);
             continue;
         }
 
