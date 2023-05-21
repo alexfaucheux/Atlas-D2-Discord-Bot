@@ -37,6 +37,7 @@ async function getMemberLogins(interaction) {
             content:
                 'You must register your clan before using this command. You can register using /register-clan.'
         });
+        return;
     }
 
     const clan = clanQuery[0];
@@ -99,8 +100,13 @@ async function getLoginData(memberData) {
         const profilePromise = axios.get(url, axiosConfig);
         profilePromiseList.push(profilePromise)
     }
-
-    const profileRespList = await Promise.all(profilePromiseList);
+    
+    let profileRespList;
+    try {
+        profileRespList = await Promise.all(profilePromiseList);
+    } catch(e) {
+        console.error(e);
+    }
 
     for (const profileResp of profileRespList) {
 
