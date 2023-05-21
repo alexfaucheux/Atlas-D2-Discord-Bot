@@ -21,7 +21,7 @@ module.exports = {
     oauth: true,
     data: new SlashCommandBuilder()
         .setName('register-clan')
-        .setDescription('(TEST COMMAND) Register clan for server.')
+        .setDescription('Register clan to server.')
         .addStringOption((option) => {
             return option
                 .setName('clan-name')
@@ -34,8 +34,9 @@ module.exports = {
 };
 
 async function registerClanName(interaction) {
+    await interaction.deferReply();
     const collectorFilter = (i) => i.user.id === interaction.user.id;
-    interaction.deferReply();
+
     const serverId = interaction.guild.id;
     const serverName = interaction.guild.name;
     const clanSearchEndpoint = endpoints.searchGroupByName;
@@ -46,27 +47,19 @@ async function registerClanName(interaction) {
     const authQuery = await authCollection.find({ userId: interaction.user.id }).toArray();
     const user = authQuery[0];
 
-    const platId = user.platformId;
-    const platType = user.platformType;
-
     axiosConfig.headers['Authorization'] = 'Bearer ' + user.accessToken;
 
     clanSearchEndpoint.bodyProps.groupName.value = clanName;
     const endpoint = generateEndpoint(clanSearchEndpoint);
     const url = rootURI + endpoint.path;
 
-    let resp;
-    // try {
-    resp = await axios.post(url, endpoint.body, axiosConfig);
-    // } catch (e) {
-    //     console.error(e);
-    // }
+    const resp = await axios.post(url, endpoint.body, axiosConfig);
 
     const clanResponse = resp.data.Response;
     const clanDetail = clanResponse.detail;
     const memberMap = clanResponse.currentUserMemberMap;
-    let memberType;
 
+    let memberType;
     for (const member in memberMap) {
         memberType = memberMap[member].memberType;
     }
