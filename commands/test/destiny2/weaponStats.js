@@ -14,7 +14,7 @@ const axiosConfig = {
 };
 
 module.exports = {
-    data: new SlashCommandBuilder().setName('weapons').setDescription('Gets weapon stats'),
+    data: new SlashCommandBuilder().setName('weapons').setDescription('(TEST COMMAND) Gets weapon stats'),
     async execute(interaction) {
         await getWeaponStats(interaction);
     }

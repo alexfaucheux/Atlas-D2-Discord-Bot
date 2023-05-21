@@ -23,7 +23,7 @@ const axiosConfig = {
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('last-login')
-        .setDescription("Gets a user's last login date.")
+        .setDescription("(TEST COMMAND) Gets a user's last login date.")
         .addStringOption((option) => {
             return option
                 .setName('bungie-name')

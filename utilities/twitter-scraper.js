@@ -28,9 +28,13 @@ async function scrapeTweets(query, batches) {
         let resp;
 
         if (!cursor) {
-            resp = await axios.get(`${INSTANCE}/search?f=tweet&q=${query}`).catch(e => console.error(`Web Scrape Axios Error: ${e.message}`));
+            resp = await axios
+                .get(`${INSTANCE}/search?f=tweet&q=${query}`)
+                .catch((e) => console.error(`Web Scrape Axios Error: ${e.message}`));
         } else {
-            resp = await axios.get(`${INSTANCE}/search${cursor}`).catch(e => console.error(`Web Scrape Axios Error: ${e.message}`));
+            resp = await axios
+                .get(`${INSTANCE}/search${cursor}`)
+                .catch((e) => console.error(`Web Scrape Axios Error: ${e.message}`));
         }
 
         const $ = cheerio.load(resp.data);
