@@ -23,7 +23,7 @@ const axiosConfig = {
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('rewards')
-        .setDescription('Gets partner reward details.'),
+        .setDescription('(TEST COMMAND) Gets partner reward details.'),
     async execute(interaction) {
         await getPartnerRewards(interaction);
     }

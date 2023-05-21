@@ -18,7 +18,11 @@ async function executeInteraction(interaction) {
     const command = client.commands.get(interaction.commandName);
 
     if (!command) {
-        console.error(`No command matching ${interaction.commandName} was found.`);
+        interaction.reply({
+            content: 'This command is not available at the moment. If the command was a test command, the test server may not be running.',
+            ephemeral: true
+        });
+        console.error(`No command matching "/${interaction.commandName}" was found.`);
         return;
     }
 

@@ -9,7 +9,7 @@ const axios = require('axios');
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('register-clan')
-        .setDescription('Register clan for server.')
+        .setDescription('(TEST COMMAND) Register clan for server.')
         .addStringOption((option) => {
             return option
                 .setName('clan-name')
