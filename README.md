@@ -32,4 +32,4 @@ A Discord bot server that delivers Destiny 2 discord news.
 ### Installation
 
 - Run the command ```npm run initialize``` in the terminal in the root directory.
-- Once initialized, you can start the server using the command ```npm start`
+- Once initialized, you can start the server using the command ```npm start```
