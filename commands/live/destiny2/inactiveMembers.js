@@ -81,7 +81,7 @@ async function getMemberLogins(interaction) {
             { name: '100+', value: deepFreezeMemberStr, inline: true }
         );
 
-    interaction.editReply({embeds: [embed]})
+    await interaction.editReply({embeds: [embed]})
 }
 
 async function getLoginData(memberData, members) {
