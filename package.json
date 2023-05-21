@@ -4,8 +4,8 @@
   "description": "first bot",
   "main": "index.js",
   "scripts": {
-    "start": "npm run deploy-global-run",
-    "dev": "npm run deploy-run",
+    "start": "npm run deploy-run",
+    "live": "npm run deploy-global-run",
     "server": "node server/index.js",
     "initialize": "npm install && npm run manifest",
     "deploy-run": "node modules/deploy-commands.js -test && node start-bot.js",

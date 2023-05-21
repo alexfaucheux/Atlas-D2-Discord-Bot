@@ -11,10 +11,8 @@ const { startMongoDB, closeMongoDB } = require('./modules/db.js');
 const { writeLine, replaceLine } = require('./utilities/consoleLineMethods.js');
 const { startServer } = require('./server/index.js');
 
-const { TEST_DISCORD_TOKEN, DISCORD_TOKEN, PORT } = process.env;
+const { DISCORD_TOKEN, PORT } = process.env;
 
-const discordToken = DISCORD_TOKEN
-// const discordToken = PORT ? DISCORD_TOKEN : TEST_DISCORD_TOKEN
 
 if (require.main === module) {
     main();
@@ -68,5 +66,5 @@ async function main() {
     }
 
     // Log in to Discord with your client's DISCORD_TOKEN
-    client.login(discordToken);
+    client.login(DISCORD_TOKEN);
 }
