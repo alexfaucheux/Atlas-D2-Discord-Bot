@@ -84,6 +84,7 @@ async function getMemberLogins(interaction) {
 
 async function getLoginData(memberData) {
     const members = [];
+    const profilePromiseList = [];
     const { getDestinyProfile } = endpoints;
 
     for (const key in memberData) {
@@ -95,7 +96,13 @@ async function getLoginData(memberData) {
         getDestinyProfile.pathParams.membershipType.value = platformType;
         const endpoint = generateEndpoint(getDestinyProfile);
         const url = rootURI + endpoint.path;
-        const profileResp = await axios.get(url, axiosConfig);
+        const profilePromise = axios.get(url, axiosConfig);
+        profilePromiseList.push(profilePromise)
+    }
+
+    const profileRespList = await Promise.all(profilePromiseList);
+
+    for (const profileResp of profileRespList) {
 
         const profile = profileResp.data.Response.profile.data;
         const name = profile.userInfo.bungieGlobalDisplayName;
