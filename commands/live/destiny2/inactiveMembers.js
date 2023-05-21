@@ -16,7 +16,7 @@ const axiosConfig = {
     headers: {
         'X-API-Key': BUNGIE_API_KEY
     },
-    timeout: 9000
+    timeout: 12000
 };
 
 module.exports = {
