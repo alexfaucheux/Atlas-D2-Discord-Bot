@@ -81,8 +81,8 @@ async function updateUserAuth(data, collection, user) {
     const username = user.tag;
     const memId = data.membership_id;
     const userResp = await getUserData(memId, data.access_token);
-    const expireDate = new Date(Date.now() + data.expires_in * 60000);
-    const refreshExpDate = new Date(Date.now() + data.refresh_expires_in * 60000);
+    const expireDate = new Date(Date.now() + (data.expires_in / 60) * 60000);
+    const refreshExpDate = new Date(Date.now() + (data.refresh_expires_in / 60) * 60000);
     
     const userData = userResp.data.Response;
     const platId = userData.primaryMembershipId;
