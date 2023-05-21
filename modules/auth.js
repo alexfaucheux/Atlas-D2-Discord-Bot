@@ -11,7 +11,7 @@ module.exports = {
     refreshToken,
     isAuthenticated,
     authButton: (userId) => {
-        const uri = PORT ? 'https://atlas-d2-discord-bot.onrender.com' : 'https://localhost:8443'
+        const uri = PORT ? 'https://atlas-d2-discord-bot.onrender.com' : 'https://localhost:8443';
         return new ButtonBuilder()
             .setLabel('Login at Bungie')
             .setURL(`${uri}/oauth/authorize/${userId}`)
@@ -20,7 +20,7 @@ module.exports = {
 };
 
 async function exchangeToken(user, code) {
-    const tokenObj = {  grant_type: 'authorization_code', code: code };
+    const tokenObj = { grant_type: 'authorization_code', code: code };
     const collection = mongoClient.collections.auth;
     const authData = await makeTokenReq(tokenObj);
     await updateUserAuth(authData, collection, user);
@@ -80,11 +80,16 @@ async function updateUserAuth(data, collection, user) {
     const userId = user.id;
     const username = user.tag;
     const memId = data.membership_id;
-    const bungieUser = await getUserData(memId);
+    const userResp = await getUserData(memId, data.access_token);
     const expireDate = new Date(Date.now() + data.expires_in * 60000);
     const refreshExpDate = new Date(Date.now() + data.refresh_expires_in * 60000);
-
-    const bungieName = bungieUser.data.Response.uniqueName;
+    
+    const userData = userResp.data.Response;
+    const platId = userData.primaryMembershipId;
+    const platform = userData.destinyMemberships.filter((mem) => mem.membershipId == platId)[0];
+    const bungieName = userData.bungieNetUser.uniqueName;
+    const platType = platform.membershipType;
+    const platIconURL = rootURI.replace('/Platform', '') + platform.iconPath;
     const query = { userId: userId };
     const opts = { upsert: true };
     const update = {
@@ -93,6 +98,9 @@ async function updateUserAuth(data, collection, user) {
             username: username,
             bungieId: memId,
             bungieName: bungieName,
+            platformId: platId,
+            platformType: platType,
+            platIconURL: platIconURL,
             accessExpDate: expireDate,
             refreshExpDate: refreshExpDate,
             accessToken: data.access_token,
@@ -103,15 +111,15 @@ async function updateUserAuth(data, collection, user) {
     await collection.updateOne(query, update, opts);
 }
 
-async function getUserData(id) {
+async function getUserData(id, accessToken) {
     const axiosConfig = {
         headers: {
+            'Authorization': 'Bearer ' + accessToken,
             'X-API-KEY': BUNGIE_API_KEY
         }
     };
-    const { getUserById } = endpoints;
-    getUserById.pathParams.id.value = id;
-    const endpoint = generateEndpoint(getUserById);
+    const { getCurrentUser } = endpoints;
+    const endpoint = generateEndpoint(getCurrentUser);
     const url = rootURI + endpoint.path;
     return await axios.get(url, axiosConfig);
 }

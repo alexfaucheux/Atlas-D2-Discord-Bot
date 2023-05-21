@@ -294,6 +294,14 @@
             "queryParams": {},
             "bodyProps": {},
             "oauth": false
+        },
+        "getCurrentUser": {
+            "method": "get",
+            "path": "/User/GetMembershipsForCurrentUser/",
+            "pathParams": {},
+            "queryParams": {},
+            "bodyProps": {},
+            "oauth": true
         }
 
     }
