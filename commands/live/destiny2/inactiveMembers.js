@@ -84,6 +84,7 @@ async function getMemberLogins(interaction) {
 }
 
 async function getLoginData(memberData, members) {
+    members = !members ? [] : members;
     const batchSize = 20;
     const nextMembers = {};
     const profilePromiseList = [];
