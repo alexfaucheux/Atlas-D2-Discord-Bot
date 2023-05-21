@@ -53,7 +53,7 @@ async function registerClanName(interaction) {
     const endpoint = generateEndpoint(clanSearchEndpoint);
     const url = rootURI + endpoint.path;
 
-    const resp = await axios.post(url, endpoint.body, axiosConfig);
+    const resp = await axios.post(url, endpoint.body, axiosConfig).catch(e => console.error(e));
 
     const clanResponse = resp.data.Response;
     const clanDetail = clanResponse.detail;
