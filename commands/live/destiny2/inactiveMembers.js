@@ -91,11 +91,12 @@ async function getLoginData(memberData, members) {
     const { getDestinyProfile } = endpoints;
 
     for (const key in memberData) {
+        const member = memberData[key].destinyUserInfo;
+
         if (profilePromiseList.length == batchSize) {
             nextMembers[key] = member;
         }
 
-        const member = memberData[key].destinyUserInfo;
         const platformType = member.membershipType;
         const platformId = member.membershipId;
 
