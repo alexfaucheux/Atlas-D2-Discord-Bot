@@ -12,23 +12,17 @@ if (require.main == module) {
 }
 
 const argv = process.argv;
-const { CLIENT_ID, DISCORD_TOKEN, TEST_CLIENT_ID, TEST_DISCORD_TOKEN, TEST_SERVER_ID, PORT } = process.env;
-
-// const clientID = PORT ? CLIENT_ID : TEST_CLIENT_ID;
-// const discordToken = PORT ? DISCORD_TOKEN : TEST_DISCORD_TOKEN;
-
-const clientID = CLIENT_ID;
-const discordToken = DISCORD_TOKEN;
+const { CLIENT_ID, DISCORD_TOKEN, TEST_SERVER_ID } = process.env;
 const routeCommands = argv.includes('-global')
-    ? Routes.applicationCommands(clientID)
-    : Routes.applicationGuildCommands(clientID, TEST_SERVER_ID);
+    ? Routes.applicationCommands(CLIENT_ID)
+    : Routes.applicationGuildCommands(CLIENT_ID, TEST_SERVER_ID);
 
 if (require.main === module) {
     main();
 }
 
 async function deployCommands(commands) {
-    const rest = new REST().setToken(discordToken);
+    const rest = new REST().setToken(DISCORD_TOKEN);
     try {
         await rest.put(routeCommands, { body: commands });
     } catch (error) {
