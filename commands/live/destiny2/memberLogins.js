@@ -37,6 +37,7 @@ async function getMemberLogins(interaction) {
             content:
                 'You must register your clan before using this command. You can register using /register-clan.'
         });
+        return;
     }
 
     const clan = clanQuery[0];
