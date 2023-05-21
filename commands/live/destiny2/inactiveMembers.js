@@ -86,6 +86,7 @@ async function getMemberLogins(interaction) {
 async function getLoginData(memberData) {
     const members = [];
     const profilePromiseList = [];
+    const urlList = [];
     const { getDestinyProfile } = endpoints;
 
     for (const key in memberData) {
@@ -100,17 +101,21 @@ async function getLoginData(memberData) {
         const profilePromise = axios.get(url, axiosConfig);
         profilePromiseList.push(profilePromise)
     }
-    
+
     let profileRespList;
     try {
-        profileRespList = await Promise.all(profilePromiseList);
+        profileRespList = await Promise.allSettled(profilePromiseList);
     } catch(e) {
         console.error(e);
     }
 
     for (const profileResp of profileRespList) {
+        if (profileResp.status == 'rejected') {
+            console.error(profileResp.reason)
+            continue;
+        }
 
-        const profile = profileResp.data.Response.profile.data;
+        const profile = profileResp.value.data.Response.profile.data;
         const name = profile.userInfo.bungieGlobalDisplayName;
         const code = profile.userInfo.bungieGlobalDisplayNameCode;
 
