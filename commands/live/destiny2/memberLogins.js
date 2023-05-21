@@ -100,7 +100,7 @@ async function getLoginData(memberData) {
         profilePromiseList.push(profilePromise)
     }
 
-    const profileRespList = await Promise.all(profilePromisList);
+    const profileRespList = await Promise.all(profilePromiseList);
 
     for (const profileResp of profileRespList) {
 
