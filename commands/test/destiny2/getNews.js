@@ -66,6 +66,7 @@ async function getNews(interaction) {
 
     collection.insertOne({ title: news.Title, date: news.PubDate, link: news.Link });
 
+    try {
     // Include html in body of message if update news.
     // TODO: assign to dedicated hotfix / maintenance channel
     if (title.includes('hotfix')) {
@@ -85,11 +86,14 @@ async function getNews(interaction) {
         .setURL(news.Link)
         .setDescription(msgBody)
         .setTimestamp(new Date(news.PubDate))
-        .setFooter({ text: apiFooterMsg })
+        .setFooter({ text: apiFooterMsg || 'Bungie API' })
         .setImage(news.ImagePath);
 
     // Posts discord message to same channel as command
     // TODO: Direct message to specified channel
     // TODO: Use mongoDB to remove redundant posts
-    interaction.channel.send({ embeds: [embedMessage] });
+    await interaction.channel.send({ embeds: [embedMessage] }).catch(console.error(e));
+    } catch (e) {
+        console.error(e);
+    }
 }

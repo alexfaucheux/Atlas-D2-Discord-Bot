@@ -55,7 +55,7 @@ async function postTweet(channel, tweet, title, interaction) {
         .setURL(tweet.url)
         .setDescription(tweet.text)
         .setTimestamp(tweet.timestamp)
-        .setFooter({ text: footerMsg })
+        .setFooter({ text: footerMsg || 'Twitter' })
         .setImage(tweet.attachments[0]?.src);
 
     channel.send({ embeds: [embedMessage] });
