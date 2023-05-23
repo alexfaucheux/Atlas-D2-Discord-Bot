@@ -83,11 +83,11 @@ async function postNews(newsChannel, hotfixChannel) {
         .setURL(news.Link)
         .setDescription(msgBody)
         .setTimestamp(new Date(news.PubDate))
-        .setFooter({ text: apiFooterMsg })
+        .setFooter({ text: apiFooterMsg || 'Bungie API' })
         .setImage(news.ImagePath);
 
     // Posts discord message to same channel as command
     // TODO: Direct message to specified channel
     // TODO: Use mongoDB to remove redundant posts
-    channel.send({ embeds: [embedMessage] });
+    await channel.send({ embeds: [embedMessage] });
 }
