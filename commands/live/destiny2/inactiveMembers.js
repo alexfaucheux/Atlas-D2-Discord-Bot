@@ -84,20 +84,13 @@ async function getMemberLogins(interaction) {
     await interaction.editReply({embeds: [embed]})
 }
 
-async function getLoginData(memberData, members) {
-    members = !members ? [] : members;
-    // const batchSize = 20;
-    const nextMembers = {};
+async function getLoginData(memberData) {
+    const members = []
     const profilePromiseList = [];
     const { getDestinyProfile } = endpoints;
 
     for (const key in memberData) {
         const member = memberData[key].destinyUserInfo;
-
-        // if (profilePromiseList.length == batchSize) {
-        //     nextMembers[key] = member;
-        // }
-
         const platformType = member.membershipType;
         const platformId = member.membershipId;
 
@@ -130,11 +123,7 @@ async function getLoginData(memberData, members) {
         };
 
         members.push(newMember);
-    }
-
-    if (nextMembers.length > 0) {
-        return getLoginData(nextMembers, members);
-    }
-
+    } 
+    
     return members;
 }

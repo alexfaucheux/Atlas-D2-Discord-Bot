@@ -68,7 +68,7 @@ async function getNews(interaction) {
 
     // Include html in body of message if update news.
     // TODO: assign to dedicated hotfix / maintenance channel
-    if (title.includes('hotfix') || title.includes('destiny 2 update')) {
+    if (title.includes('hotfix')) {
         body = await parseHtml(news.HtmlContent);
     }
 
