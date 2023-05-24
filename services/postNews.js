@@ -89,5 +89,5 @@ async function postNews(newsChannel, hotfixChannel) {
     // Posts discord message to same channel as command
     // TODO: Direct message to specified channel
     // TODO: Use mongoDB to remove redundant posts
-    await channel.send({ embeds: [embedMessage] });
+    await channel.send({ embeds: [embedMessage] }).catch(e => console.error('Error sending message to channel:', e));
 }
