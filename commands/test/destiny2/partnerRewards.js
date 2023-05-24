@@ -8,19 +8,23 @@ import { generateEndpoint } from '../../../utilities/endpointGenerator.js';
 
 // import constants
 import { mongoClient } from '../../../modules/db.js';
-import { paths, htmlConfig as axiosConfig } from '../../../constants/bungie.js';
+import * as bungie from '../../../constants/bungie.js';
 
 // assign constants
-const { rootURI, endpoints } = paths;
+const { api: rootURI } = bungie.urls;
+const { endpoints, htmlConfig: axiosConfig } = bungie.api;
 const endpointObj = endpoints.getBungieRewards;
-module.exports = {
-    data: new SlashCommandBuilder()
-        .setName('rewards')
-        .setDescription('(TEST COMMAND) Gets partner reward details.'),
-    async execute(interaction) {
-        await getPartnerRewards(interaction);
-    }
-};
+
+const oauth = false;
+const data = new SlashCommandBuilder()
+    .setName('rewards')
+    .setDescription('(TEST COMMAND) Gets partner reward details.');
+
+async function execute(interaction) {
+    await getPartnerRewards(interaction);
+}
+
+export { data, execute, oauth };
 
 async function getPartnerRewards(interaction) {
     const collection = mongoClient.collections.rewards;

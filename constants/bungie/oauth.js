@@ -1,6 +1,7 @@
+import urls from './uri.js';
 const { BUNGIE_AUTH_ID, BUNGIE_AUTH_SECRET } = process.env;
 
-export const headers = {
+export const tokenHeader = {
     'Content-Type': 'application/x-www-form-urlencoded'
 };
 
@@ -8,15 +9,29 @@ export const htmlConfig = {
     headers: oauthHeaders
 };
 
-export const body = {
+export const tokenBody = {
     client_id: BUNGIE_AUTH_ID,
     client_secret: BUNGIE_AUTH_SECRET
 };
 
+export const getAuthHeader = (accessToken) => {
+    return {
+        'Authorization': 'Bearer ' + accessToken,
+        ...tokenHeader
+    }
+}
+
+export const getAxiosAuthHeader = (accessToken) => {
+    const authHeader = getAuthHeader(accessToken);
+    return {
+        headers: authHeader
+    }
+}
+
 export const endpoints = {
     authorize: {
         method: 'get',
-        path: oauthURI,
+        path: urls.oauth,
         pathParams: {},
         queryParams: {
             response_type: {
@@ -36,7 +51,7 @@ export const endpoints = {
     },
     getOAuthToken: {
         method: 'get',
-        path: oauthTokenURI,
+        path: urls.oauthToken,
         pathParams: {},
         queryParams: {},
         bodyProps: {},

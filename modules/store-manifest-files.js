@@ -5,13 +5,14 @@ import fs from 'fs';
 import path from 'path';
 
 // Import constants
-import paths from '../constants/bungie/api.js';
+import * as bungie from '../constants/bungie.js';
 
 // Import local functions
 import { replaceLine, resetLine } from '../utilities/consoleLineMethods.js';
 import { generateEndpoint } from '../utilities/endpointGenerator.js';
 
-const { rootURI, endpoints } = paths;
+const { api: rootURI } = bungie.urls;
+const { endpoints } = bungie.api;
 
 if (require.main == module) {
     dotenv.config();

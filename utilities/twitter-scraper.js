@@ -1,9 +1,11 @@
-import fs from "fs";
-import path from "path";
-import axios from "axios";
-import cheerio from "cheerio";
-import { hyperlink } from "discord.js";
-import { twitterURI, twitterInstURI } from "../constants/bungieValues.json";
+import fs from 'fs';
+import path from 'path';
+import axios from 'axios';
+import cheerio from 'cheerio';
+import { hyperlink } from 'discord.js';
+
+import * as twitter from '../constants/twitter.js';
+const { twitterURI, twitterInstURI } = twitter.urls;
 
 const INSTANCE = twitterInstURI;
 const twitterRootURI = twitterURI;

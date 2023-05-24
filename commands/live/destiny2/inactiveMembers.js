@@ -1,18 +1,22 @@
 import { mongoClient } from '../../../modules/db.js';
 import { SlashCommandBuilder, EmbedBuilder } from 'discord.js';
 import { generateEndpoint } from '../../../utilities/endpointGenerator.js';
-import { paths, htmlConfig as axiosConfig } from '../../../constants/bungie.js';
+import * as bungie from '../../../constants/bungie.js';
 import axios from 'axios';
 
-const { rootURI, endpoints } = paths;
-module.exports = {
-    data: new SlashCommandBuilder()
-        .setName('inactive-members')
-        .setDescription('Time since last login for inactive clan members.'),
-    async execute(interaction) {
-        await getMemberLogins(interaction);
-    }
-};
+const { api: rootURI } = bungie.urls;
+const { endpoints, htmlConfig: axiosConfig } = bungie.api;
+
+const oauth = false;
+const data = new SlashCommandBuilder()
+    .setName('inactive-members')
+    .setDescription('Time since last login for inactive clan members.');
+
+async function execute(interaction) {
+    await getMemberLogins(interaction);
+}
+
+export { data, execute, oauth };
 
 async function getMemberLogins(interaction) {
     await interaction.deferReply();

@@ -3,11 +3,11 @@ import fs from "node:fs";
 import path from "node:path";
 import { Collection } from "discord.js";
 
-module.exports = {
-    getAllCommands: (type) => getCommands(type, 'all'),
-    getLiveCommands: (type) => getCommands(type, 'live'),
-    getTestCommands: (type) => getCommands(type, 'test')
-};
+const getAllCommands = (type) => getCommands(type, 'all');
+const getLiveCommands = (type) => getCommands(type, 'live');
+const getTestCommands = (type) => getCommands(type, 'test')
+
+export {getAllCommands, getLiveCommands, getTestCommands};
 
 function getCommands(type, subfolder) {
     const fileToFolderPath = {};

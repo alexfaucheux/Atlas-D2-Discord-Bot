@@ -1,21 +1,15 @@
-import readline from "readline";
+import * as readline from "readline";
 
-const resetLine = () => {
+export const resetLine = () => {
     readline.clearLine(process.stdout);
     readline.cursorTo(process.stdout, 0);
 }
 
-const writeLine = (str) => {
+export const writeLine = (str) => {
     process.stdout.write(str);
 }
 
-const replaceLine = (str) => {
+export const replaceLine = (str) => {
     resetLine();
     process.stdout.write(str);
-}
-
-module.exports = {
-    resetLine,
-    writeLine,
-    replaceLine
 }

@@ -28,9 +28,11 @@ dotenv.config();
 const { DISCORD_TOKEN, PORT } = process.env;
 
 
-if (require.main === module) {
-    main();
-}
+// if (require.main === module) {
+//     main();
+// }
+
+main();
 
 async function main() {
     const mongoConnectStr = 'Connecting to MongoDB...';

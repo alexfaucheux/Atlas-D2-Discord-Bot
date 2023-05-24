@@ -1,11 +1,9 @@
-export default function generateEndpoint(endpoint) {
-    let endpointStr = endpoint.path;
-    const bodyProps = endpoint.bodyProps;
-    const pathParams = endpoint.pathParams;
-    const queryParams = endpoint.queryParams;
+export function generateEndpoint(endpoint) {
+    const { bodyProps, pathParams, queryParams } = endpoint;
     const returnObj = {};
     const body = {};
-
+    
+    let endpointStr = endpoint.path;
     for (const param in pathParams) {
         const paramObj = pathParams[param];
 
@@ -15,7 +13,7 @@ export default function generateEndpoint(endpoint) {
         }
 
         if (paramObj.value === null) {
-            throw new Error(`Path parameter ${param} needs a value.`)
+            throw new Error(`Path parameter ${param} needs a value.`);
         }
 
         endpointStr = endpointStr.replace(`{${param}}`, paramObj.value);
@@ -30,7 +28,7 @@ export default function generateEndpoint(endpoint) {
         }
 
         if (paramObj.value === null && paramObj.required) {
-            throw new Error(`Query parameter ${param} needs a value.`)
+            throw new Error(`Query parameter ${param} needs a value.`);
         }
 
         endpointStr += !endpointStr.includes('?') ? '?' : '&';
@@ -45,7 +43,7 @@ export default function generateEndpoint(endpoint) {
         }
 
         if (propObj.value === null && propObj.required) {
-            throw new Error(`Body property ${prop} needs a value.`)
+            throw new Error(`Body property ${prop} needs a value.`);
         }
 
         body[prop] = propObj.value;

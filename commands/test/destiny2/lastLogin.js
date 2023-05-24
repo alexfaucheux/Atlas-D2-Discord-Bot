@@ -8,25 +8,29 @@ import { getProfiles } from '../../../utilities/profile.js';
 import { generateEndpoint } from '../../../utilities/endpointGenerator.js';
 
 // Import constants
-import { paths, htmlConfig as axiosConfig } from '../../../constants/bungie.js';
+import * as bungie from '../../../constants/bungie.js';
 
 // Assign constants
-const { rootURI, endpoints } = paths;
+const { api: rootURI } = bungie.urls;
+const { endpoints, htmlConfig: axiosConfig } = bungie.api;
 const profileEndpoint = endpoints.getDestinyProfile;
-module.exports = {
-    data: new SlashCommandBuilder()
-        .setName('last-login')
-        .setDescription("(TEST COMMAND) Gets a user's last login date.")
-        .addStringOption((option) => {
-            return option
-                .setName('bungie-name')
-                .setDescription('the player to query')
-                .setRequired(true);
-        }),
-    async execute(interaction) {
-        await getLastLogin(interaction);
-    }
-};
+
+const oauth = false;
+const data = new SlashCommandBuilder()
+    .setName('last-login')
+    .setDescription("(TEST COMMAND) Gets a user's last login date.")
+    .addStringOption((option) => {
+        return option
+            .setName('bungie-name')
+            .setDescription('the player to query')
+            .setRequired(true);
+    });
+
+async function execute(interaction) {
+    await getLastLogin(interaction);
+}
+
+exports = { data, execute, oauth };
 
 async function getLastLogin(interaction) {
     const bungieName = interaction.options.getString('bungie-name');

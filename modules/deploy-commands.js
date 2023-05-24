@@ -4,6 +4,7 @@ import {
   Routes,
 } from 'discord.js';
 import * as dotenv from 'dotenv';
+dotenv.config();
 
 // Import local functions
 import {
@@ -15,10 +16,10 @@ import {
   writeLine,
 } from '../utilities/consoleLineMethods.js';
 
-// If ran directly, convert .env properties to environment vars
-if (require.main == module) {
-    dotenv.config();
-}
+import { createRequire } from 'module';
+
+const require = createRequire(import.meta.url);
+
 
 const argv = process.argv;
 const { CLIENT_ID, DISCORD_TOKEN, TEST_SERVER_ID } = process.env;

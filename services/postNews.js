@@ -8,20 +8,17 @@ import { generateEndpoint } from '../utilities/endpointGenerator.js';
 
 // Import constants
 import { mongoClient } from '../modules/db.js';
-import paths from '../constants/bungie/api.js';
-import values from '../../../constants/bungieValues.js';
+import * as bungie from '../constants/bungie.js';
+import * as twitter from '../constants/twitter.js';
+
+const { api: rootURI, standard: standardURI, news: newsURL } = bungie.urls;
+const { endpoints, htmlConfig: axiosConfig } = bungie.api;
+const apiFooterMsg = bungie.footerMsg;
+
+const { bungieIcon: iconURL } = twitter.paths.imagePaths;
 
 // Assign constants
-const { rootURI, endpoints } = paths;
-const { BUNGIE_API_KEY } = process.env;
 const destinyNews = endpoints.getBungieNews;
-const { twitIconURL, standardURI, newsURL, apiFooterMsg } = values;
-
-const axiosConfig = {
-    headers: {
-        'X-API-Key': BUNGIE_API_KEY
-    }
-};
 
 module.exports = {
     postNews
@@ -73,7 +70,7 @@ async function postNews(newsChannel, hotfixChannel) {
         .setColor(0xff33e1)
         .setAuthor({
             name: 'Bungie News',
-            iconURL: twitIconURL,
+            iconURL: iconURL,
             url: newsURL
         })
         .setTitle(news.Title)

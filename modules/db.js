@@ -13,12 +13,12 @@ const client = new MongoClient(mongoURL, {
     }
 });
 
-const mongoClient = {
+export const mongoClient = {
     db: null,
     collections: {}
 }
 
-async function start() {
+export async function startMongoDB() {
     await client.connect();
     const db = mongoClient.db = client.db(dbName);
     const cols = mongoClient.collections;
@@ -31,8 +31,4 @@ async function start() {
     cols.bungieNews = db.collection('news');
 }
 
-module.exports = {
-    startMongoDB: async () => await start(),
-    closeMongoDB: async () => await client.close(),
-    mongoClient
-};
+export const closeMongoDB = async () => await client.close();

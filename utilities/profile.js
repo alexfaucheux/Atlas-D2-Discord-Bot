@@ -5,18 +5,13 @@ import axios from 'axios';
 import { generateEndpoint } from './endpointGenerator.js';
 
 // Import constants
-import paths from '../constants/bungie/api.js';
+import * as bungie from '../constants/bungie.js'
+
+const { api: rootURI } = bungie.urls;
+const { endpoints, htmlConfig: axiosConfig } = bungie.api;
 
 // Assign constants
-const { rootURI, endpoints } = paths;
-const { BUNGIE_API_KEY } = process.env;
 const endpointObj = endpoints.searchPlayerByName;
-
-const axiosConfig = {
-    headers: {
-        'X-API-Key': BUNGIE_API_KEY
-    }
-};
 
 module.exports = {
     getProfiles,

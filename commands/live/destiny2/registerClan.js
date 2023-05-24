@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { mongoClient } from '../../../modules/db.js';
 import { generateEndpoint } from '../../../utilities/endpointGenerator.js';
-import { paths, htmlConfig as axiosConfig } from '../../../constants/bungie.js';
+import * as bungie from '../../../constants/bungie.js';
+
 import {
     SlashCommandBuilder,
     ButtonBuilder,
@@ -10,22 +11,25 @@ import {
     bold
 } from 'discord.js';
 
-const { rootURI, endpoints } = paths;
-module.exports = {
-    oauth: true,
-    data: new SlashCommandBuilder()
-        .setName('register-clan')
-        .setDescription('Register clan to server.')
-        .addStringOption((option) => {
-            return option
-                .setName('clan-name')
-                .setDescription('Clan name to register.')
-                .setRequired(true);
-        }),
-    async execute(interaction) {
-        await registerClanName(interaction);
-    }
-};
+const { api: rootURI } = bungie.urls;
+const { endpoints, htmlConfig: axiosConfig } = bungie.api;
+
+const oauth = true;
+const data = new SlashCommandBuilder()
+    .setName('register-clan')
+    .setDescription('Register clan to server.')
+    .addStringOption((option) => {
+        return option
+            .setName('clan-name')
+            .setDescription('Clan name to register.')
+            .setRequired(true);
+    });
+
+async function execute(interaction) {
+    await registerClanName(interaction);
+}
+
+export { data, execute, oauth };
 
 async function registerClanName(interaction) {
     await interaction.deferReply();

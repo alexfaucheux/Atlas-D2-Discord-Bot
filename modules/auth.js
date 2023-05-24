@@ -1,25 +1,22 @@
 import axios from 'axios';
 import { mongoClient } from '../modules/db.js';
 import { ButtonBuilder, ButtonStyle } from 'discord.js';
-import values from '../constants/bungie/uri.js';
-import paths from '../constants/bungie/api.js';
+import * as bungie from '../constants/bungie.js';
 import { generateEndpoint } from '../utilities/endpointGenerator.js';
 
-const { oauthTokenURI } = values;
-const { rootURI, endpoints } = paths;
-const { BUNGIE_AUTH_ID, BUNGIE_AUTH_SECRET, BUNGIE_API_KEY, PORT } = process.env;
-module.exports = {
-    exchangeToken,
-    refreshToken,
-    isAuthenticated,
-    authButton: (userId) => {
-        const uri = PORT ? 'https://atlas-d2-discord-bot.onrender.com' : 'https://localhost:8443';
-        return new ButtonBuilder()
-            .setLabel('Login at Bungie')
-            .setURL(`${uri}/oauth/authorize/${userId}`)
-            .setStyle(ButtonStyle.Link);
-    }
+const { api: rootURI, oauthToken: oauthTokenURI } = bungie.urls;
+const { endpoints } = bungie.api;
+const { PORT } = process.env;
+
+const authButton = (userId) => {
+    const uri = PORT ? 'https://atlas-d2-discord-bot.onrender.com' : 'https://localhost:8443';
+    return new ButtonBuilder()
+        .setLabel('Login at Bungie')
+        .setURL(`${uri}/oauth/authorize/${userId}`)
+        .setStyle(ButtonStyle.Link);
 };
+
+export { exchangeToken, refreshToken, isAuthenticated, authButton };
 
 async function exchangeToken(user, code) {
     const tokenObj = { grant_type: 'authorization_code', code: code };
@@ -62,16 +59,11 @@ async function isAuthenticated(user) {
 }
 
 async function makeTokenReq(tokenObj) {
-    const axiosConfig = {
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        }
-    };
+    const { tokenBody, htmlConfig: axiosConfig } = bungie.oauth;
 
     const axiosBody = {
         ...tokenObj,
-        client_id: BUNGIE_AUTH_ID,
-        client_secret: BUNGIE_AUTH_SECRET
+        ...tokenBody
     };
 
     const resp = await axios.post(oauthTokenURI, axiosBody, axiosConfig);
@@ -114,12 +106,7 @@ async function updateUserAuth(data, collection, user) {
 }
 
 async function getUserData(id, accessToken) {
-    const axiosConfig = {
-        headers: {
-            'Authorization': 'Bearer ' + accessToken,
-            'X-API-KEY': BUNGIE_API_KEY
-        }
-    };
+    const axiosConfig = bungie.oauth.getAxiosAuthHeader(accessToken);
     const { getCurrentUser } = endpoints;
     const endpoint = generateEndpoint(getCurrentUser);
     const url = rootURI + endpoint.path;

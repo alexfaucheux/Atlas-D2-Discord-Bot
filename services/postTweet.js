@@ -6,6 +6,7 @@ import { getPrimeGamingTweets, getBungieTweets } from "../utilities/twitter-scra
 
 // import constants
 import { mongoClient } from "../modules/db.js";
+import { footerMsg } from "../constants/twitter.js";
 
 module.exports = {
     postHelpTweet,
@@ -30,7 +31,6 @@ async function postPrimeTweet(channel, interaction) {
 async function postTweet(channel, tweet, title, interaction) {
     const collection = mongoClient.collections.tweets;
     const query = await collection.find({ twitId: tweet?.id }).toArray();
-    const footerMsg = 'Content pulled from Twitter';
 
     if (query.length || !tweet) {
         if (interaction) {

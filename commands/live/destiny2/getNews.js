@@ -9,25 +9,22 @@ import { generateEndpoint } from '../../../utilities/endpointGenerator.js';
 // Import constants
 import { mongoClient } from '../../../modules/db.js';
 
-import {
-    api as bungieAPI,
-    uri as bungieURI,
-    footerMsg as apiFooterMsg
-} from '../../../constants/bungie.js';
-import { paths as twitterPaths } from '../../../constants/twitter.js';
+import * as bungie from '../../../constants/bungie.js';
+import * as twitter from '../../../constants/twitter.js';
 
-const { standard: standardURI, api: rootURI, news: newsURL } = bungieURI;
-const { endpoints, htmlConfig: axiosConfig } = bungieAPI;
-const { bungieIcon: twitIconURL } = twitterPaths.ImagePaths;
+const { standard: standardURI, api: rootURI, news: newsURL } = bungie.urls;
+const { endpoints, htmlConfig: axiosConfig } = bungie.api;
+const { bungieIcon: twitIconURL } = twitter.paths.imagePaths;
 
 const destinyNews = endpoints.getBungieNews;
 
-module.exports = {
-    data: new SlashCommandBuilder().setName('news').setDescription('Get latest news'),
-    async execute(interaction) {
-        await getNews(interaction);
-    }
-};
+const oauth = false;
+const data = new SlashCommandBuilder().setName('news').setDescription('Get latest news');
+async function execute(interaction) {
+    await getNews(interaction);
+}
+
+export { data, execute, oauth };
 
 async function getNews(interaction) {
     let body = '';
@@ -81,7 +78,7 @@ async function getNews(interaction) {
         .setURL(news.Link)
         .setDescription(msgBody)
         .setTimestamp(new Date(news.PubDate))
-        .setFooter({ text: apiFooterMsg })
+        .setFooter({ text: bungie.footerMsg })
         .setImage(news.ImagePath);
 
     // Posts discord message to same channel as command
