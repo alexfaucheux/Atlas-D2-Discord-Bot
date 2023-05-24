@@ -1,15 +1,29 @@
-// Import global functions
-const { Client, GatewayIntentBits } = require('discord.js');
-const path = require('node:path');
-const dotenv = require('dotenv');
-const fs = require('node:fs');
-dotenv.config();
+import fs from 'node:fs';
+import path from 'node:path';
 
+// Import global functions
+import {
+  Client,
+  GatewayIntentBits,
+} from 'discord.js';
+import * as dotenv from 'dotenv';
+
+import {
+  closeMongoDB,
+  startMongoDB,
+} from './modules/db.js';
+import { startServer } from './server/index.js';
 // Import local functions
-const { getTestCommands, getLiveCommands } = require('./utilities/commands.js');
-const { startMongoDB, closeMongoDB } = require('./modules/db.js');
-const { writeLine, replaceLine } = require('./utilities/consoleLineMethods.js');
-const { startServer } = require('./server/index.js');
+import {
+  getLiveCommands,
+  getTestCommands,
+} from './utilities/commands.js';
+import {
+  replaceLine,
+  writeLine,
+} from './utilities/consoleLineMethods.js';
+
+dotenv.config();
 
 const { DISCORD_TOKEN, PORT } = process.env;
 

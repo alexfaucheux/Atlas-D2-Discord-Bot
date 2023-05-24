@@ -1,13 +1,22 @@
 // Import global functions
-const { REST, Routes } = require('discord.js');
+import {
+  REST,
+  Routes,
+} from 'discord.js';
+import * as dotenv from 'dotenv';
 
 // Import local functions
-const { getTestCommands, getLiveCommands } = require('../utilities/commands.js');
-const { writeLine, replaceLine } = require('../utilities/consoleLineMethods.js');
+import {
+  getLiveCommands,
+  getTestCommands,
+} from '../utilities/commands.js';
+import {
+  replaceLine,
+  writeLine,
+} from '../utilities/consoleLineMethods.js';
 
 // If ran directly, convert .env properties to environment vars
 if (require.main == module) {
-    const dotenv = require('dotenv');
     dotenv.config();
 }
 

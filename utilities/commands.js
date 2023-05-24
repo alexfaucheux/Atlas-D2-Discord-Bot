@@ -1,7 +1,7 @@
 // Import global functions
-const fs = require('node:fs');
-const path = require('node:path');
-const { Collection } = require('discord.js');
+import fs from "node:fs";
+import path from "node:path";
+import { Collection } from "discord.js";
 
 module.exports = {
     getAllCommands: (type) => getCommands(type, 'all'),

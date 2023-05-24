@@ -1,5 +1,5 @@
-const HTMLParser = require('html-to-json-parser');
-const { bold, underscore } = require('discord.js');
+import HTMLParser from "html-to-json-parser";
+import { bold, underscore } from "discord.js";
 
 module.exports = {
     parseHtml

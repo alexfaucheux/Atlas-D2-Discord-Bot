@@ -1,18 +1,19 @@
 // Import global functions
-const fs = require('fs');
-const path = require('path');
-const axios = require('axios');
-
-// Import local functions
-const { resetLine, replaceLine } = require('../utilities/consoleLineMethods.js');
+import * as dotenv from 'dotenv';
+import axios from 'axios';
+import fs from 'fs';
+import path from 'path';
 
 // Import constants
-const { rootURI, endpoints } = require('../constants/bungieEndpoints.json');
-const { generateEndpoint } = require('../utilities/endpointGenerator.js');
+import paths from '../constants/bungie/api.js';
 
-// If ran directly, convert .env properties to environment vars
+// Import local functions
+import { replaceLine, resetLine } from '../utilities/consoleLineMethods.js';
+import { generateEndpoint } from '../utilities/endpointGenerator.js';
+
+const { rootURI, endpoints } = paths;
+
 if (require.main == module) {
-    const dotenv = require('dotenv');
     dotenv.config();
 }
 
@@ -99,5 +100,3 @@ async function createManifestFile(filePath, contentDefURL) {
 
     return Promise.resolve();
 }
-
-

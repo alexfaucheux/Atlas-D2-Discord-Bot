@@ -1,5 +1,5 @@
-const { SlashCommandBuilder, EmbedBuilder, hyperlink } = require('discord.js');
-const { postPrimeTweet } = require('../../../services/postTweet');
+import { SlashCommandBuilder} from "discord.js";
+import { postPrimeTweet } from "../../../services/postTweet";
 
 module.exports = {
     data: new SlashCommandBuilder()

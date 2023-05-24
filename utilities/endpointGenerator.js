@@ -1,8 +1,4 @@
-module.exports = {
-    generateEndpoint
-}
-
-function generateEndpoint(endpoint) {
+export default function generateEndpoint(endpoint) {
     let endpointStr = endpoint.path;
     const bodyProps = endpoint.bodyProps;
     const pathParams = endpoint.pathParams;

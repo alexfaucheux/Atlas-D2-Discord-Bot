@@ -1,24 +1,21 @@
 // Import global functions
-const axios = require('axios');
-const { EmbedBuilder, italic } = require('discord.js');
+import axios from 'axios';
+import { EmbedBuilder, italic } from 'discord.js';
 
 // Import local functions
-const { parseHtml } = require('../utilities/htmlParser.js');
-const { generateEndpoint } = require('../utilities/endpointGenerator.js');
+import { parseHtml } from '../utilities/htmlParser.js';
+import { generateEndpoint } from '../utilities/endpointGenerator.js';
 
 // Import constants
-const { mongoClient } = require('../modules/db.js');
-const { rootURI, endpoints } = require('../constants/bungieEndpoints.json');
-const {
-    twitIconURL,
-    standardURI,
-    newsURL,
-    apiFooterMsg
-} = require('../constants/bungieValues.json');
+import { mongoClient } from '../modules/db.js';
+import paths from '../constants/bungie/api.js';
+import values from '../../../constants/bungieValues.js';
 
 // Assign constants
+const { rootURI, endpoints } = paths;
 const { BUNGIE_API_KEY } = process.env;
 const destinyNews = endpoints.getBungieNews;
+const { twitIconURL, standardURI, newsURL, apiFooterMsg } = values;
 
 const axiosConfig = {
     headers: {

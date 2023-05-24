@@ -1,13 +1,14 @@
 // Import global functions
-const axios = require('axios');
+import axios from 'axios';
 
 // Import local functions
-const { generateEndpoint } = require('./endpointGenerator.js');
+import { generateEndpoint } from './endpointGenerator.js';
 
 // Import constants
-const { rootURI, endpoints } = require('../constants/bungieEndpoints.json');
+import paths from '../constants/bungie/api.js';
 
 // Assign constants
+const { rootURI, endpoints } = paths;
 const { BUNGIE_API_KEY } = process.env;
 const endpointObj = endpoints.searchPlayerByName;
 
@@ -28,7 +29,7 @@ async function getProfiles(bungieName) {
 
     endpointObj.bodyProps.displayName.value = name;
     endpointObj.bodyProps.displayNameCode.value = nameCode;
-    
+
     // Generate endpoint using default values
     const url = rootURI + endpoint.path;
     const endpoint = generateEndpoint(endpointObj);

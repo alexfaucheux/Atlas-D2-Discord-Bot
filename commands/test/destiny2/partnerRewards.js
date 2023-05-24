@@ -1,25 +1,18 @@
 // import global functions
-const { SlashCommandBuilder, bold, blockQuote } = require('discord.js');
-const date = require('date-and-time');
-const axios = require('axios');
+import { SlashCommandBuilder, bold, blockQuote } from 'discord.js';
+import date from 'date-and-time';
+import axios from 'axios';
 
 // import local functions
-const { generateEndpoint } = require('../../../utilities/endpointGenerator.js');
+import { generateEndpoint } from '../../../utilities/endpointGenerator.js';
 
 // import constants
-const { mongoClient } = require('../../../modules/db.js');
-const { rootURI, endpoints } = require('../../../constants/bungieEndpoints.json');
+import { mongoClient } from '../../../modules/db.js';
+import { paths, htmlConfig as axiosConfig } from '../../../constants/bungie.js';
 
 // assign constants
-const { BUNGIE_API_KEY } = process.env;
+const { rootURI, endpoints } = paths;
 const endpointObj = endpoints.getBungieRewards;
-
-const axiosConfig = {
-    headers: {
-        'X-API-Key': BUNGIE_API_KEY
-    }
-};
-
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('rewards')
@@ -71,5 +64,5 @@ async function getPartnerRewards(interaction) {
         collection.insertMany(recordsToInsert);
     }
 
-    interaction.reply({content: prefix + blockQuote(reply), ephemeral: true});
+    interaction.reply({ content: prefix + blockQuote(reply), ephemeral: true });
 }

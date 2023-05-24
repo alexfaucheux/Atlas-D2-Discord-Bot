@@ -1,24 +1,10 @@
-const { mongoClient } = require('../../../modules/db.js');
-const {
-    SlashCommandBuilder,
-    EmbedBuilder,
-    ButtonBuilder,
-    ButtonStyle,
-    ActionRowBuilder,
-    bold
-} = require('discord.js');
-const { rootURI, endpoints } = require('../../../constants/bungieEndpoints.json');
-const { generateEndpoint } = require('../../../utilities/endpointGenerator.js');
-const { BUNGIE_API_KEY } = process.env;
-const axios = require('axios');
+import { mongoClient } from '../../../modules/db.js';
+import { SlashCommandBuilder, EmbedBuilder } from 'discord.js';
+import { generateEndpoint } from '../../../utilities/endpointGenerator.js';
+import { paths, htmlConfig as axiosConfig } from '../../../constants/bungie.js';
+import axios from 'axios';
 
-const axiosConfig = {
-    headers: {
-        'X-API-Key': BUNGIE_API_KEY
-    },
-    timeout: 12000
-};
-
+const { rootURI, endpoints } = paths;
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('inactive-members')
@@ -74,18 +60,18 @@ async function getMemberLogins(interaction) {
         .setColor(0xff33e1)
         .setTitle(`Days Since Last Login for Inactive Members`)
         .setTimestamp(new Date())
-        .setFooter({ text: `${clan.name} • Bungie API`})
+        .setFooter({ text: `${clan.name} • Bungie API` })
         .setFields(
             { name: '30-59', value: laggyMemberStr, inline: true },
             { name: '60-99', value: frozenMemberStr, inline: true },
             { name: '100+', value: deepFreezeMemberStr, inline: true }
         );
 
-    await interaction.editReply({embeds: [embed]})
+    await interaction.editReply({ embeds: [embed] });
 }
 
 async function getLoginData(memberData) {
-    const members = []
+    const members = [];
     const profilePromiseList = [];
     const { getDestinyProfile } = endpoints;
 
@@ -99,7 +85,7 @@ async function getLoginData(memberData) {
         const endpoint = generateEndpoint(getDestinyProfile);
         const url = rootURI + endpoint.path;
         const profilePromise = axios.get(url, axiosConfig);
-        profilePromiseList.push(profilePromise)
+        profilePromiseList.push(profilePromise);
     }
 
     const profileRespList = await Promise.allSettled(profilePromiseList);
@@ -123,7 +109,7 @@ async function getLoginData(memberData) {
         };
 
         members.push(newMember);
-    } 
-    
+    }
+
     return members;
 }

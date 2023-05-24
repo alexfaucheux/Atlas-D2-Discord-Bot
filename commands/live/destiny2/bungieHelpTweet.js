@@ -1,6 +1,6 @@
 // Import global functions
-const { SlashCommandBuilder} = require('discord.js');
-const { postHelpTweet } = require('../../../services/postTweet');
+import { SlashCommandBuilder } from "discord.js";
+import { postHelpTweet } from "../../../services/postTweet";
 
 module.exports = {
     data: new SlashCommandBuilder()

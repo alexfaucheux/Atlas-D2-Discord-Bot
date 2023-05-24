@@ -1,18 +1,19 @@
-const dotenv = require('dotenv');
+import { Client, GatewayIntentBits } from 'discord.js';
+import * as dotenv from 'dotenv';
+import express from 'express';
+import fs from 'fs';
+import http from 'http';
+import https from 'https';
+import { nanoid } from 'nanoid';
+
+import { oauthURI } from '../constants/bungieValues.json';
+import { exchangeToken, isAuthenticated, refreshToken } from '../modules/auth.js';
+import { closeMongoDB, startMongoDB } from '../modules/db.js';
+import { replaceLine, writeLine } from '../utilities/consoleLineMethods.js';
+import { generateEndpoint } from '../utilities/endpointGenerator.js';
+
 dotenv.config();
 
-const fs = require('fs');
-const http = require('http');
-const https = require('https');
-const express = require('express');
-const { nanoid } = require('nanoid');
-
-const { startMongoDB, closeMongoDB } = require('../modules/db.js');
-const { generateEndpoint } = require('../utilities/endpointGenerator.js');
-const { writeLine, replaceLine } = require('../utilities/consoleLineMethods.js');
-const { exchangeToken, refreshToken, isAuthenticated } = require('../modules/auth.js');
-const { oauthURI } = require('../constants/bungieValues.json');
-const { Client, GatewayIntentBits } = require('discord.js');
 const { BUNGIE_AUTH_ID, DISCORD_TOKEN, PORT } = process.env;
 
 const app = express();
@@ -23,7 +24,7 @@ const httpsServer = PORT ? null : https.createServer({ key: key, cert: cert }, a
 const httpsPort = 8443;
 const httpPort = PORT || 8080;
 const httpServer = http.createServer(app);
-const uri = PORT ? 'https://atlas-d2-discord-bot.onrender.com' : 'https://localhost:' + httpsPort
+const uri = PORT ? 'https://atlas-d2-discord-bot.onrender.com' : 'https://localhost:' + httpsPort;
 
 let user;
 

@@ -1,20 +1,17 @@
-const axios = require('axios');
-const { rootURI, endpoints } = require('../../../constants/bungieEndpoints.json');
-const { getMainProfile } = require('../../../utilities/profile.js');
-const { generateEndpoint } = require('../../../utilities/endpointGenerator.js');
-const { getDestinyProfile, getActivityHistory, getCarnageReport } = endpoints;
-const { mongoClient } = require('../../../modules/db.js');
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-const { BUNGIE_API_KEY } = process.env;
+import axios from 'axios';
+import { paths, htmlConfig as axiosConfig } from '../../../constants/bungie.js';
+import { getMainProfile } from '../../../utilities/profile.js';
+import { generateEndpoint } from '../../../utilities/endpointGenerator.js';
+import { mongoClient } from '../../../modules/db.js';
+import { SlashCommandBuilder, EmbedBuilder } from 'discord.js';
 
-const axiosConfig = {
-    headers: {
-        'X-API-Key': BUNGIE_API_KEY
-    }
-};
+const { rootURI, endpoints } = paths;
+const { getDestinyProfile, getActivityHistory, getCarnageReport } = endpoints;
 
 module.exports = {
-    data: new SlashCommandBuilder().setName('weapons').setDescription('(TEST COMMAND) Gets weapon stats'),
+    data: new SlashCommandBuilder()
+        .setName('weapons')
+        .setDescription('(TEST COMMAND) Gets weapon stats'),
     async execute(interaction) {
         await getWeaponStats(interaction);
     }

@@ -1,9 +1,9 @@
-const fs = require('fs');
-const path = require('path');
-const axios = require('axios');
-const cheerio = require('cheerio');
-const { hyperlink } = require('discord.js');
-const { twitterURI, twitterInstURI } = require('../constants/bungieValues.json');
+import fs from "fs";
+import path from "path";
+import axios from "axios";
+import cheerio from "cheerio";
+import { hyperlink } from "discord.js";
+import { twitterURI, twitterInstURI } from "../constants/bungieValues.json";
 
 const INSTANCE = twitterInstURI;
 const twitterRootURI = twitterURI;

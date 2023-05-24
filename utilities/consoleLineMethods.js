@@ -1,4 +1,4 @@
-const readline = require('readline');
+import readline from "readline";
 
 const resetLine = () => {
     readline.clearLine(process.stdout);

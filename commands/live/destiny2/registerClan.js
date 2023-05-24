@@ -1,22 +1,16 @@
-const { mongoClient } = require('../../../modules/db.js');
-const {
+import axios from 'axios';
+import { mongoClient } from '../../../modules/db.js';
+import { generateEndpoint } from '../../../utilities/endpointGenerator.js';
+import { paths, htmlConfig as axiosConfig } from '../../../constants/bungie.js';
+import {
     SlashCommandBuilder,
     ButtonBuilder,
     ButtonStyle,
     ActionRowBuilder,
     bold
-} = require('discord.js');
-const { rootURI, endpoints } = require('../../../constants/bungieEndpoints.json');
-const { generateEndpoint } = require('../../../utilities/endpointGenerator.js');
-const { BUNGIE_API_KEY } = process.env;
-const axios = require('axios');
+} from 'discord.js';
 
-const axiosConfig = {
-    headers: {
-        'X-API-Key': BUNGIE_API_KEY
-    }
-};
-
+const { rootURI, endpoints } = paths;
 module.exports = {
     oauth: true,
     data: new SlashCommandBuilder()
@@ -53,7 +47,7 @@ async function registerClanName(interaction) {
     const endpoint = generateEndpoint(clanSearchEndpoint);
     const url = rootURI + endpoint.path;
 
-    const resp = await axios.post(url, endpoint.body, axiosConfig).catch(e => console.error(e));
+    const resp = await axios.post(url, endpoint.body, axiosConfig).catch((e) => console.error(e));
 
     const clanResponse = resp.data.Response;
     const clanDetail = clanResponse.detail;

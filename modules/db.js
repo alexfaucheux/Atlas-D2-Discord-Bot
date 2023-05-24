@@ -1,4 +1,4 @@
-const { MongoClient, ServerApiVersion } = require('mongodb');
+import { MongoClient, ServerApiVersion } from "mongodb";
 const { MONGODB_USER, MONGODB_PASS } = process.env;
 
 const dbName = 'atlas-D2'

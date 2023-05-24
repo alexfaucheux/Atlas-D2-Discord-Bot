@@ -1,5 +1,5 @@
-const { Events, ActionRowBuilder, quote } = require('discord.js');
-const { isAuthenticated, authButton } = require('../modules/auth.js');
+import { Events, ActionRowBuilder, quote } from "discord.js";
+import { isAuthenticated, authButton } from "../modules/auth.js";
 
 module.exports = {
     name: Events.InteractionCreate,

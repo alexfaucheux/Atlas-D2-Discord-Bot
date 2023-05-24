@@ -1,11 +1,11 @@
 // Import global functions
-const { EmbedBuilder } = require('discord.js');
+import { EmbedBuilder } from "discord.js";
 
 // Import local functions
-const { getPrimeGamingTweets, getBungieTweets } = require('../utilities/twitter-scraper.js');
+import { getPrimeGamingTweets, getBungieTweets } from "../utilities/twitter-scraper.js";
 
 // import constants
-const { mongoClient } = require('../modules/db.js');
+import { mongoClient } from "../modules/db.js";
 
 module.exports = {
     postHelpTweet,

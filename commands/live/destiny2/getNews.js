@@ -1,30 +1,26 @@
 // Import global functions
-const axios = require('axios');
-const { SlashCommandBuilder, EmbedBuilder, italic } = require('discord.js');
+import axios from 'axios';
+import { SlashCommandBuilder, EmbedBuilder, italic } from 'discord.js';
 
 // Import local functions
-const { parseHtml } = require('../../../utilities/htmlParser.js');
-const { generateEndpoint } = require('../../../utilities/endpointGenerator.js');
+import { parseHtml } from '../../../utilities/htmlParser.js';
+import { generateEndpoint } from '../../../utilities/endpointGenerator.js';
 
 // Import constants
-const { mongoClient } = require('../../../modules/db.js');
-const { rootURI, endpoints } = require('../../../constants/bungieEndpoints.json');
-const {
-    twitIconURL,
-    standardURI,
-    newsURL,
-    apiFooterMsg
-} = require('../../../constants/bungieValues.json');
+import { mongoClient } from '../../../modules/db.js';
 
-// Assign constants
-const { BUNGIE_API_KEY } = process.env;
+import {
+    api as bungieAPI,
+    uri as bungieURI,
+    footerMsg as apiFooterMsg
+} from '../../../constants/bungie.js';
+import { paths as twitterPaths } from '../../../constants/twitter.js';
+
+const { standard: standardURI, api: rootURI, news: newsURL } = bungieURI;
+const { endpoints, htmlConfig: axiosConfig } = bungieAPI;
+const { bungieIcon: twitIconURL } = twitterPaths.ImagePaths;
+
 const destinyNews = endpoints.getBungieNews;
-
-const axiosConfig = {
-    headers: {
-        'X-API-Key': BUNGIE_API_KEY
-    }
-};
 
 module.exports = {
     data: new SlashCommandBuilder().setName('news').setDescription('Get latest news'),

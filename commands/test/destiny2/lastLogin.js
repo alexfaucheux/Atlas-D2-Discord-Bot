@@ -1,25 +1,18 @@
 // Import global functions
-const axios = require('axios');
-const date = require('date-and-time');
-const { SlashCommandBuilder } = require('discord.js');
+import axios from 'axios';
+import date from 'date-and-time';
+import { SlashCommandBuilder } from 'discord.js';
 
 // Import local functions
-const { getProfiles } = require('../../../utilities/profile.js');
-const { generateEndpoint } = require('../../../utilities/endpointGenerator.js');
+import { getProfiles } from '../../../utilities/profile.js';
+import { generateEndpoint } from '../../../utilities/endpointGenerator.js';
 
 // Import constants
-const { rootURI, endpoints } = require('../../../constants/bungieEndpoints.json');
+import { paths, htmlConfig as axiosConfig } from '../../../constants/bungie.js';
 
 // Assign constants
-const { BUNGIE_API_KEY } = process.env;
+const { rootURI, endpoints } = paths;
 const profileEndpoint = endpoints.getDestinyProfile;
-
-const axiosConfig = {
-    headers: {
-        'X-API-Key': BUNGIE_API_KEY
-    }
-};
-
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('last-login')

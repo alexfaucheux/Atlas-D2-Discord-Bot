@@ -1,11 +1,13 @@
-const axios = require('axios');
-const { mongoClient } = require('../modules/db.js');
-const { BUNGIE_AUTH_ID, BUNGIE_AUTH_SECRET, BUNGIE_API_KEY, PORT } = process.env;
-const { ButtonBuilder, ButtonStyle } = require('discord.js');
-const { oauthTokenURI } = require('../constants/bungieValues.json');
-const { rootURI, endpoints } = require('../constants/bungieEndpoints.json');
-const { generateEndpoint } = require('../utilities/endpointGenerator.js');
+import axios from 'axios';
+import { mongoClient } from '../modules/db.js';
+import { ButtonBuilder, ButtonStyle } from 'discord.js';
+import values from '../constants/bungie/uri.js';
+import paths from '../constants/bungie/api.js';
+import { generateEndpoint } from '../utilities/endpointGenerator.js';
 
+const { oauthTokenURI } = values;
+const { rootURI, endpoints } = paths;
+const { BUNGIE_AUTH_ID, BUNGIE_AUTH_SECRET, BUNGIE_API_KEY, PORT } = process.env;
 module.exports = {
     exchangeToken,
     refreshToken,
@@ -83,7 +85,7 @@ async function updateUserAuth(data, collection, user) {
     const userResp = await getUserData(memId, data.access_token);
     const expireDate = new Date(Date.now() + (data.expires_in / 60) * 60000);
     const refreshExpDate = new Date(Date.now() + (data.refresh_expires_in / 60) * 60000);
-    
+
     const userData = userResp.data.Response;
     const platId = userData.primaryMembershipId;
     const platform = userData.destinyMemberships.filter((mem) => mem.membershipId == platId)[0];
