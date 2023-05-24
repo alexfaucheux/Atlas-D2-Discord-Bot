@@ -26,7 +26,10 @@ async function executeServices(client) {
         // Live services
         postHelpTweet(maintChannel).catch((e) => console.warn('Posting help tweet failed:', e));
         postPrimeTweet(newsChannel).catch((e) => console.warn('Posting prime tweet failed.', e));
-        postNews(newsChannel, hotfixChannel).catch((e) => console.warn('Posting news failed.', e));
+        postNews(newsChannel, hotfixChannel).catch((e) => {
+            console.warn('Posting news failed:');
+            console.warn(e)
+        });
     } else {
         // Test services
     }
