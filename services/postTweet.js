@@ -42,8 +42,6 @@ async function postTweet(channel, tweet, title, interaction) {
         return;
     }
 
-    collection.insertOne({ twitId: tweet.id, url: tweet.url, author: tweet.fullname, obj: tweet });
-
     const embedMessage = new EmbedBuilder()
         .setColor(0xff33e1)
         .setAuthor({
@@ -58,5 +56,11 @@ async function postTweet(channel, tweet, title, interaction) {
         .setFooter({ text: footerMsg || 'Twitter' })
         .setImage(tweet.attachments[0]?.src);
 
-    channel.send({ embeds: [embedMessage] });
+    try {
+        await channel.send({ embeds: [embedMessage] });
+        collection.insertOne({ twitId: tweet.id, url: tweet.url, author: tweet.fullname, obj: tweet });
+    }
+    catch (e) {
+        console.error('Error posting tweet to channel: ', e);
+    }
 }

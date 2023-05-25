@@ -61,8 +61,6 @@ async function postNews(newsChannel, hotfixChannel) {
         return;
     }
 
-    collection.insertOne({ title: news.Title, date: news.PubDate, link: news.Link });
-
     // Include html in body of message if update news.
     // TODO: assign to dedicated hotfix / maintenance channel
     if (title.includes('hotfix')) {
@@ -87,7 +85,11 @@ async function postNews(newsChannel, hotfixChannel) {
         .setImage(news.ImagePath);
 
     // Posts discord message to same channel as command
-    // TODO: Direct message to specified channel
-    // TODO: Use mongoDB to remove redundant posts
-    await channel.send({ embeds: [embedMessage] }).catch(e => console.error('Error sending message to channel:', e));
+
+    try {
+        await channel.send({ embeds: [embedMessage] });
+        collection.insertOne({ title: news.Title, date: news.PubDate, link: news.Link });
+    } catch (e) {
+        console.error('Error posting to news channel:', e);
+    }
 }
