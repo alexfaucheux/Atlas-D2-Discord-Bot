@@ -1,6 +1,6 @@
 const { BUNGIE_API_KEY } = process.env;
 
-export const headers = {
+export const standardHeaders = {
     'X-API-KEY': BUNGIE_API_KEY
 };
 

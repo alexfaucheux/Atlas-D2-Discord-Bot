@@ -1,7 +1,7 @@
-import { MongoClient, ServerApiVersion } from "mongodb";
+import { MongoClient, ServerApiVersion } from 'mongodb';
 const { MONGODB_USER, MONGODB_PASS } = process.env;
 
-const dbName = 'atlas-D2'
+const dbName = 'atlas-D2';
 const mongoURL = `mongodb+srv://${MONGODB_USER}:${MONGODB_PASS}@destiny2-discord-bot-cl.jzodvan.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -13,14 +13,14 @@ const client = new MongoClient(mongoURL, {
     }
 });
 
-export const mongoClient = {
+const mongoClient = {
     db: null,
     collections: {}
-}
+};
 
-export async function startMongoDB() {
+async function startMongoDB() {
     await client.connect();
-    const db = mongoClient.db = client.db(dbName);
+    const db = (mongoClient.db = client.db(dbName));
     const cols = mongoClient.collections;
 
     cols.auth = db.collection('auth');
@@ -31,4 +31,6 @@ export async function startMongoDB() {
     cols.bungieNews = db.collection('news');
 }
 
-export const closeMongoDB = async () => await client.close();
+const closeMongoDB = async () => await client.close();
+
+export { mongoClient, startMongoDB, closeMongoDB };

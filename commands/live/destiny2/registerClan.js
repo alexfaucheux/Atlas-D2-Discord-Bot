@@ -14,22 +14,21 @@ import {
 const { api: rootURI } = bungie.urls;
 const { endpoints, htmlConfig: axiosConfig } = bungie.api;
 
-const oauth = true;
-const data = new SlashCommandBuilder()
-    .setName('register-clan')
-    .setDescription('Register clan to server.')
-    .addStringOption((option) => {
-        return option
-            .setName('clan-name')
-            .setDescription('Clan name to register.')
-            .setRequired(true);
-    });
-
-async function execute(interaction) {
-    await registerClanName(interaction);
-}
-
-export { data, execute, oauth };
+export default {
+    oauth: true,
+    data: new SlashCommandBuilder()
+        .setName('register-clan')
+        .setDescription('Register clan to server.')
+        .addStringOption((option) => {
+            return option
+                .setName('clan-name')
+                .setDescription('Clan name to register.')
+                .setRequired(true);
+        }),
+    execute: async function (interaction) {
+        await registerClanName(interaction);
+    }
+};
 
 async function registerClanName(interaction) {
     await interaction.deferReply();
@@ -51,7 +50,21 @@ async function registerClanName(interaction) {
     const endpoint = generateEndpoint(clanSearchEndpoint);
     const url = rootURI + endpoint.path;
 
-    const resp = await axios.post(url, endpoint.body, axiosConfig).catch((e) => console.error(e));
+    let resp;
+    try {
+        resp = await axios.post(url, endpoint.body, axiosConfig);
+    } catch (e) {
+        if (e.response?.data.ErrorStatus == 'ClanNotFound') {
+            await interaction.editReply({
+                content: `Could not find a clan named ${bold(clanName)}!`,
+                components: []
+            });
+            return;
+        }
+
+        throw e;
+    }
+
 
     const clanResponse = resp.data.Response;
     const clanDetail = clanResponse.detail;

@@ -15,22 +15,21 @@ const { api: rootURI } = bungie.urls;
 const { endpoints, htmlConfig: axiosConfig } = bungie.api;
 const profileEndpoint = endpoints.getDestinyProfile;
 
-const oauth = false;
-const data = new SlashCommandBuilder()
-    .setName('last-login')
-    .setDescription("(TEST COMMAND) Gets a user's last login date.")
-    .addStringOption((option) => {
-        return option
-            .setName('bungie-name')
-            .setDescription('the player to query')
-            .setRequired(true);
-    });
-
-async function execute(interaction) {
-    await getLastLogin(interaction);
-}
-
-exports = { data, execute, oauth };
+export default {
+    oauth: false,
+    data: new SlashCommandBuilder()
+        .setName('last-login')
+        .setDescription("Gets a user's last login date.")
+        .addStringOption((option) => {
+            return option
+                .setName('bungie-name')
+                .setDescription('the player to query')
+                .setRequired(true);
+        }),
+    execute: async function (interaction) {
+        await getLastLogin(interaction);
+    }
+};
 
 async function getLastLogin(interaction) {
     const bungieName = interaction.options.getString('bungie-name');

@@ -1,8 +1,11 @@
 // Import global functions
 import * as dotenv from 'dotenv';
+dotenv.config();
+
 import axios from 'axios';
 import fs from 'fs';
 import path from 'path';
+import { URL } from 'url';
 
 // Import constants
 import * as bungie from '../constants/bungie.js';
@@ -13,10 +16,6 @@ import { generateEndpoint } from '../utilities/endpointGenerator.js';
 
 const { api: rootURI } = bungie.urls;
 const { endpoints } = bungie.api;
-
-if (require.main == module) {
-    dotenv.config();
-}
 
 // Assign constants
 const { BUNGIE_API_KEY } = process.env;
@@ -29,13 +28,10 @@ const config = {
 };
 
 // If ran directly, create manifest files
-if (require.main === module) {
-    const parentDir = path.dirname(__dirname);
-    const manifestPath = path.join(parentDir, 'manifest');
-    createManifestFiles(manifestPath);
-}
+const manifestPath = new URL('../manifest', import.meta.url);
+createManifestFiles(manifestPath);
 
-module.exports = {
+export default {
     createManifestFiles
 };
 

@@ -1,4 +1,4 @@
-import * as readline from "readline";
+import readline from "readline";
 
 export const resetLine = () => {
     readline.clearLine(process.stdout);

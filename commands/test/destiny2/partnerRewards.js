@@ -15,16 +15,15 @@ const { api: rootURI } = bungie.urls;
 const { endpoints, htmlConfig: axiosConfig } = bungie.api;
 const endpointObj = endpoints.getBungieRewards;
 
-const oauth = false;
-const data = new SlashCommandBuilder()
-    .setName('rewards')
-    .setDescription('(TEST COMMAND) Gets partner reward details.');
-
-async function execute(interaction) {
-    await getPartnerRewards(interaction);
-}
-
-export { data, execute, oauth };
+export default {
+    oauth: false,
+    data: new SlashCommandBuilder()
+        .setName('rewards')
+        .setDescription('(TEST COMMAND) Gets partner reward details.'),
+    execute: async function (interaction) {
+        await getPartnerRewards(interaction);
+    }
+};
 
 async function getPartnerRewards(interaction) {
     const collection = mongoClient.collections.rewards;

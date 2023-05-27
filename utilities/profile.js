@@ -5,7 +5,7 @@ import axios from 'axios';
 import { generateEndpoint } from './endpointGenerator.js';
 
 // Import constants
-import * as bungie from '../constants/bungie.js'
+import * as bungie from '../constants/bungie.js';
 
 const { api: rootURI } = bungie.urls;
 const { endpoints, htmlConfig: axiosConfig } = bungie.api;
@@ -13,10 +13,7 @@ const { endpoints, htmlConfig: axiosConfig } = bungie.api;
 // Assign constants
 const endpointObj = endpoints.searchPlayerByName;
 
-module.exports = {
-    getProfiles,
-    getMainProfile
-};
+export { getProfiles, getMainProfile };
 
 async function getProfiles(bungieName) {
     const profiles = [];
@@ -25,9 +22,10 @@ async function getProfiles(bungieName) {
     endpointObj.bodyProps.displayName.value = name;
     endpointObj.bodyProps.displayNameCode.value = nameCode;
 
+    const endpoint = generateEndpoint(endpointObj);
+
     // Generate endpoint using default values
     const url = rootURI + endpoint.path;
-    const endpoint = generateEndpoint(endpointObj);
     const resp = await axios.post(url, endpoint.body, axiosConfig);
 
     const bungieResp = resp.data.Response;

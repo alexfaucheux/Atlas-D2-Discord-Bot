@@ -1,17 +1,14 @@
 // Import global functions
-import { EmbedBuilder } from "discord.js";
+import { EmbedBuilder } from 'discord.js';
 
 // Import local functions
-import { getPrimeGamingTweets, getBungieTweets } from "../utilities/twitter-scraper.js";
+import { getPrimeGamingTweets, getBungieTweets } from '../utilities/twitter-scraper.js';
 
 // import constants
-import { mongoClient } from "../modules/db.js";
-import { footerMsg } from "../constants/twitter.js";
+import { mongoClient } from '../modules/db.js';
+import { footerMsg } from '../constants/twitter.js';
 
-module.exports = {
-    postHelpTweet,
-    postPrimeTweet
-};
+export { postHelpTweet, postPrimeTweet };
 
 async function postHelpTweet(channel, interaction) {
     const tweets = await getBungieTweets();
@@ -42,8 +39,6 @@ async function postTweet(channel, tweet, title, interaction) {
         return;
     }
 
-    collection.insertOne({ twitId: tweet.id, url: tweet.url, author: tweet.fullname, obj: tweet });
-
     const embedMessage = new EmbedBuilder()
         .setColor(0xff33e1)
         .setAuthor({
@@ -58,5 +53,15 @@ async function postTweet(channel, tweet, title, interaction) {
         .setFooter({ text: footerMsg })
         .setImage(tweet.attachments[0]?.src);
 
-    channel.send({ embeds: [embedMessage] });
+    try {
+        await channel.send({ embeds: [embedMessage] });
+        collection.insertOne({
+            twitId: tweet.id,
+            url: tweet.url,
+            author: tweet.fullname,
+            obj: tweet
+        });
+    } catch (e) {
+        console.error('Error posting tweet to channel:', e);
+    }
 }

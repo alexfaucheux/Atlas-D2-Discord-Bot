@@ -7,16 +7,15 @@ import axios from 'axios';
 const { api: rootURI } = bungie.urls;
 const { endpoints, htmlConfig: axiosConfig } = bungie.api;
 
-const oauth = false;
-const data = new SlashCommandBuilder()
-    .setName('inactive-members')
-    .setDescription('Time since last login for inactive clan members.');
-
-async function execute(interaction) {
-    await getMemberLogins(interaction);
-}
-
-export { data, execute, oauth };
+export default {
+    oauth: false,
+    data: new SlashCommandBuilder()
+        .setName('inactive-members')
+        .setDescription('Time since last login for inactive clan members.'),
+    execute: async function (interaction) {
+        await getMemberLogins(interaction);
+    }
+};
 
 async function getMemberLogins(interaction) {
     await interaction.deferReply();
@@ -66,9 +65,9 @@ async function getMemberLogins(interaction) {
         .setTimestamp(new Date())
         .setFooter({ text: `${clan.name} • Bungie API` })
         .setFields(
-            { name: '30-59', value: laggyMemberStr, inline: true },
-            { name: '60-99', value: frozenMemberStr, inline: true },
-            { name: '100+', value: deepFreezeMemberStr, inline: true }
+            { name: '30-59', value: laggyMemberStr || 'None', inline: true },
+            { name: '60-99', value: frozenMemberStr || 'None', inline: true },
+            { name: '100+', value: deepFreezeMemberStr || 'None', inline: true }
         );
 
     await interaction.editReply({ embeds: [embed] });

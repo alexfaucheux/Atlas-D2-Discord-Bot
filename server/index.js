@@ -1,6 +1,3 @@
-import * as dotenv from 'dotenv';
-dotenv.config();
-
 import { Client, GatewayIntentBits } from 'discord.js';
 import express from 'express';
 import fs from 'fs';
@@ -90,7 +87,7 @@ async function authenticate(req, res) {
 
     const state = nanoid();
 
-    authorize.queryParams.redirect_uri = redirectUri;
+    authorize.queryParams.redirect_uri.value = redirectUri;
 
     const endpoint = generateEndpoint(authorize);
 

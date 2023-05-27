@@ -3,19 +3,20 @@ import path from 'path';
 import axios from 'axios';
 import cheerio from 'cheerio';
 import { hyperlink } from 'discord.js';
+import { URL } from 'url';
 
 import * as twitter from '../constants/twitter.js';
 const { twitterURI, twitterInstURI } = twitter.urls;
 
 const INSTANCE = twitterInstURI;
 const twitterRootURI = twitterURI;
-const parentDir = path.dirname(__dirname);
+const parentDir = new URL('../', import.meta.url);
 
-module.exports = {
-    getBungieTweets: async () => await getTweets('from:BungieHelp'),
-    getPrimeGamingTweets: async () => await getTweets('from:primegaming'),
-    generateTweetFiles
-};
+const getBungieTweets = () => getTweets('from:BungieHelp');
+const getPrimeGamingTweets = () => getTweets('from:primegaming')
+
+
+export {getBungieTweets, getPrimeGamingTweets, generateTweetFiles};
 
 async function getTweets(query) {
     const tweets = await scrapeTweets(query, 1);
@@ -170,9 +171,9 @@ async function generateTweetFiles(query) {
     }
 }
 
-if (require.main === module) {
-    generateTweetFiles('from:BungieHelp');
-    scrapeTweets('from:primegaming', 1).then((tweets) =>
-        console.log(JSON.stringify(tweets, null, 2))
-    );
-}
+// if (require.main === module) {
+//     generateTweetFiles('from:BungieHelp');
+//     scrapeTweets('from:primegaming', 1).then((tweets) =>
+//         console.log(JSON.stringify(tweets, null, 2))
+//     );
+// }

@@ -6,7 +6,7 @@ export const tokenHeader = {
 };
 
 export const htmlConfig = {
-    headers: oauthHeaders
+    headers: tokenHeader
 };
 
 export const tokenBody = {
