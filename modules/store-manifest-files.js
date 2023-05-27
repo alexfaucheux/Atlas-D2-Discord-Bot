@@ -1,20 +1,21 @@
 // Import global functions
-const fs = require('fs');
-const path = require('path');
-const axios = require('axios');
+import * as dotenv from 'dotenv';
+dotenv.config();
 
-// Import local functions
-const { resetLine, replaceLine } = require('../utilities/consoleLineMethods.js');
+import axios from 'axios';
+import fs from 'fs';
+import path from 'path';
+import { URL } from 'url';
 
 // Import constants
-const { rootURI, endpoints } = require('../constants/bungieEndpoints.json');
-const { generateEndpoint } = require('../utilities/endpointGenerator.js');
+import * as bungie from '../constants/bungie.js';
 
-// If ran directly, convert .env properties to environment vars
-if (require.main == module) {
-    const dotenv = require('dotenv');
-    dotenv.config();
-}
+// Import local functions
+import { replaceLine, resetLine } from '../utilities/consoleLineMethods.js';
+import { generateEndpoint } from '../utilities/endpointGenerator.js';
+
+const { api: rootURI } = bungie.urls;
+const { endpoints } = bungie.api;
 
 // Assign constants
 const { BUNGIE_API_KEY } = process.env;
@@ -27,13 +28,10 @@ const config = {
 };
 
 // If ran directly, create manifest files
-if (require.main === module) {
-    const parentDir = path.dirname(__dirname);
-    const manifestPath = path.join(parentDir, 'manifest');
-    createManifestFiles(manifestPath);
-}
+const manifestPath = new URL('../manifest', import.meta.url);
+createManifestFiles(manifestPath);
 
-module.exports = {
+export default {
     createManifestFiles
 };
 
@@ -99,5 +97,3 @@ async function createManifestFile(filePath, contentDefURL) {
 
     return Promise.resolve();
 }
-
-

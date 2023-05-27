@@ -1,11 +1,12 @@
-const { SlashCommandBuilder, EmbedBuilder, hyperlink } = require('discord.js');
-const { postPrimeTweet } = require('../../../services/postTweet');
+import { SlashCommandBuilder } from 'discord.js';
+import { postPrimeTweet } from '../../../services/postTweet.js';
 
-module.exports = {
+export default {
+    oauth: false,
     data: new SlashCommandBuilder()
         .setName('latest-prime')
         .setDescription('Gets latest tweet from Prime Gaming about Destiny 2'),
-    async execute(interaction) {
+    execute: async function (interaction) {
         await getLatestTweet(interaction);
     }
 };

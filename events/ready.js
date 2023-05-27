@@ -1,10 +1,10 @@
-const { Events, ActivityType } = require('discord.js');
-const { postHelpTweet, postPrimeTweet } = require('../services/postTweet');
-const { postNews } = require('../services/postNews');
-const { writeLine, replaceLine } = require('../utilities/consoleLineMethods.js');
+import { Events, ActivityType } from "discord.js";
+import { postHelpTweet, postPrimeTweet } from "../services/postTweet.js";
+import { postNews } from "../services/postNews.js";
+import { writeLine, replaceLine } from "../utilities/consoleLineMethods.js";
 const { PORT } = process.env;
 
-module.exports = {
+export default {
     name: Events.ClientReady,
     once: true,
     execute: (client) => {

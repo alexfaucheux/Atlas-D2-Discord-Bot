@@ -1,34 +1,27 @@
 // Import global functions
-const axios = require('axios');
-const { SlashCommandBuilder, EmbedBuilder, italic } = require('discord.js');
+import axios from 'axios';
+import { SlashCommandBuilder, EmbedBuilder, italic } from 'discord.js';
 
 // Import local functions
-const { parseHtml } = require('../../../utilities/htmlParser.js');
-const { generateEndpoint } = require('../../../utilities/endpointGenerator.js');
+import { parseHtml } from '../../../utilities/htmlParser.js';
+import { generateEndpoint } from '../../../utilities/endpointGenerator.js';
 
 // Import constants
-const { mongoClient } = require('../../../modules/db.js');
-const { rootURI, endpoints } = require('../../../constants/bungieEndpoints.json');
-const {
-    twitIconURL,
-    standardURI,
-    newsURL,
-    apiFooterMsg
-} = require('../../../constants/bungieValues.json');
+import { mongoClient } from '../../../modules/db.js';
+import * as bungie from '../../../constants/bungie.js';
+import * as twitter from '../../../constants/twitter.js';
 
-// Assign constants
-const { BUNGIE_API_KEY } = process.env;
+const { standard: standardURI, api: rootURI, news: newsURL } = bungie.urls;
+const { endpoints, htmlConfig: axiosConfig } = bungie.api;
+const { bungieIcon: twitIconURL } = twitter.paths.imagePaths;
 const destinyNews = endpoints.getBungieNews;
 
-const axiosConfig = {
-    headers: {
-        'X-API-Key': BUNGIE_API_KEY
-    }
-};
+console.log(twitIconURL);
 
-module.exports = {
+export default {
+    oauth: false,
     data: new SlashCommandBuilder().setName('news').setDescription('Get latest news'),
-    async execute(interaction) {
+    execute: async function (interaction) {
         await getNews(interaction);
     }
 };
@@ -55,18 +48,22 @@ async function getNews(interaction) {
     // This makes news.Link the full URL to the news source.
     news.Link = standardURI + news.Link;
     const prefix = italic(news.Description) + '\n\n';
-
     const collection = mongoClient.collections.bungieNews;
     const query = await collection.find({ link: news.Link }).toArray();
+    // if (query.length) {
+    //     interaction.reply({
+    //         content: 'Most recent news already posted!',
+    //         ephemeral: true
+    //     });
+    //     return;
+    // }
 
-    if (query.length) {
-        interaction.reply({ content: 'Most recent news already posted!', ephemeral: true });
-        return;
-    }
+    collection.insertOne({
+        title: news.Title,
+        date: news.PubDate,
+        link: news.Link
+    });
 
-    collection.insertOne({ title: news.Title, date: news.PubDate, link: news.Link });
-
-    try {
     // Include html in body of message if update news.
     // TODO: assign to dedicated hotfix / maintenance channel
     if (title.includes('hotfix')) {
@@ -86,14 +83,13 @@ async function getNews(interaction) {
         .setURL(news.Link)
         .setDescription(msgBody)
         .setTimestamp(new Date(news.PubDate))
-        .setFooter({ text: apiFooterMsg || 'Bungie API' })
+        .setFooter({
+            text: bungie.footerMsg
+        })
         .setImage(news.ImagePath);
 
     // Posts discord message to same channel as command
     // TODO: Direct message to specified channel
     // TODO: Use mongoDB to remove redundant posts
     await interaction.channel.send({ embeds: [embedMessage] }).catch(console.error(e));
-    } catch (e) {
-        console.error(e);
-    }
 }

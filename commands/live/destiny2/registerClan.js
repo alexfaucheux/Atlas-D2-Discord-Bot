@@ -1,23 +1,20 @@
-const { mongoClient } = require('../../../modules/db.js');
-const {
+import axios from 'axios';
+import { mongoClient } from '../../../modules/db.js';
+import { generateEndpoint } from '../../../utilities/endpointGenerator.js';
+import * as bungie from '../../../constants/bungie.js';
+
+import {
     SlashCommandBuilder,
     ButtonBuilder,
     ButtonStyle,
     ActionRowBuilder,
     bold
-} = require('discord.js');
-const { rootURI, endpoints } = require('../../../constants/bungieEndpoints.json');
-const { generateEndpoint } = require('../../../utilities/endpointGenerator.js');
-const { BUNGIE_API_KEY } = process.env;
-const axios = require('axios');
+} from 'discord.js';
 
-const axiosConfig = {
-    headers: {
-        'X-API-Key': BUNGIE_API_KEY
-    }
-};
+const { api: rootURI } = bungie.urls;
+const { endpoints, htmlConfig: axiosConfig } = bungie.api;
 
-module.exports = {
+export default {
     oauth: true,
     data: new SlashCommandBuilder()
         .setName('register-clan')
@@ -28,7 +25,7 @@ module.exports = {
                 .setDescription('Clan name to register.')
                 .setRequired(true);
         }),
-    async execute(interaction) {
+    execute: async function (interaction) {
         await registerClanName(interaction);
     }
 };
@@ -53,7 +50,21 @@ async function registerClanName(interaction) {
     const endpoint = generateEndpoint(clanSearchEndpoint);
     const url = rootURI + endpoint.path;
 
-    const resp = await axios.post(url, endpoint.body, axiosConfig).catch(e => console.error(e));
+    let resp;
+    try {
+        resp = await axios.post(url, endpoint.body, axiosConfig);
+    } catch (e) {
+        if (e.response?.data.ErrorStatus == 'ClanNotFound') {
+            await interaction.editReply({
+                content: `Could not find a clan named ${bold(clanName)}!`,
+                components: []
+            });
+            return;
+        }
+
+        throw e;
+    }
+
 
     const clanResponse = resp.data.Response;
     const clanDetail = clanResponse.detail;

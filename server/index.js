@@ -1,19 +1,18 @@
-const dotenv = require('dotenv');
-dotenv.config();
+import { Client, GatewayIntentBits } from 'discord.js';
+import express from 'express';
+import fs from 'fs';
+import http from 'http';
+import https from 'https';
+import { nanoid } from 'nanoid';
 
-const fs = require('fs');
-const http = require('http');
-const https = require('https');
-const express = require('express');
-const { nanoid } = require('nanoid');
+import * as bungie from '../constants/bungie.js';
+import { exchangeToken, isAuthenticated, refreshToken } from '../modules/auth.js';
+import { closeMongoDB, startMongoDB } from '../modules/db.js';
+import { replaceLine, writeLine } from '../utilities/consoleLineMethods.js';
+import { generateEndpoint } from '../utilities/endpointGenerator.js';
 
-const { startMongoDB, closeMongoDB } = require('../modules/db.js');
-const { generateEndpoint } = require('../utilities/endpointGenerator.js');
-const { writeLine, replaceLine } = require('../utilities/consoleLineMethods.js');
-const { exchangeToken, refreshToken, isAuthenticated } = require('../modules/auth.js');
-const { oauthURI } = require('../constants/bungieValues.json');
-const { Client, GatewayIntentBits } = require('discord.js');
-const { BUNGIE_AUTH_ID, DISCORD_TOKEN, PORT } = process.env;
+const { authorize } = bungie.oauth.endpoints;
+const { DISCORD_TOKEN, PORT } = process.env;
 
 const app = express();
 const key = PORT ? '' : fs.readFileSync('./selfsigned.key', 'utf-8');
@@ -23,17 +22,15 @@ const httpsServer = PORT ? null : https.createServer({ key: key, cert: cert }, a
 const httpsPort = 8443;
 const httpPort = PORT || 8080;
 const httpServer = http.createServer(app);
-const uri = PORT ? 'https://atlas-d2-discord-bot.onrender.com' : 'https://localhost:' + httpsPort
+const uri = PORT ? 'https://atlas-d2-discord-bot.onrender.com' : 'https://localhost:' + httpsPort;
 
 let user;
 
-if (require.main === module) {
-    startServerWithMongo();
-}
+// if (require.main === module) {
+//     startServerWithMongo();
+// }
 
-module.exports = {
-    startServer
-};
+export { startServer };
 
 async function startServerWithMongo() {
     const connected = await startMongo();
@@ -90,24 +87,11 @@ async function authenticate(req, res) {
 
     const state = nanoid();
 
-    const endpoint = generateEndpoint({
-        path: oauthURI,
-        pathParams: {},
-        queryParams: {
-            response_type: {
-                value: 'code'
-            },
-            client_id: {
-                value: BUNGIE_AUTH_ID
-            },
-            redirect_uri: {
-                value: redirectUri
-            }
-        },
-        bodyProps: {}
-    });
+    authorize.queryParams.redirect_uri.value = redirectUri;
 
-    // Redirect example using Express (see http://expressjs.com/api.html#res.redirect)
+    const endpoint = generateEndpoint(authorize);
+
+    // Redirect to oauth endpoint
     res.redirect(endpoint.path);
 }
 

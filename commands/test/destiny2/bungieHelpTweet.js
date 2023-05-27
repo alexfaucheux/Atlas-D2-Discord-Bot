@@ -1,12 +1,13 @@
 // Import global functions
-const { SlashCommandBuilder} = require('discord.js');
-const { postHelpTweet } = require('../../../services/postTweet');
+import { SlashCommandBuilder } from 'discord.js';
+import { postHelpTweet } from '../../../services/postTweet.js';
 
-module.exports = {
+export default {
+    oauth: false,
     data: new SlashCommandBuilder()
         .setName('latest-server')
         .setDescription('Gets latest tweet from BungieHelp'),
-    async execute(interaction) {
+    execute: async function (interaction) {
         await getLatestTweet(interaction);
     }
 };

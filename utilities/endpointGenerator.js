@@ -1,25 +1,19 @@
-module.exports = {
-    generateEndpoint
-}
-
-function generateEndpoint(endpoint) {
-    let endpointStr = endpoint.path;
-    const bodyProps = endpoint.bodyProps;
-    const pathParams = endpoint.pathParams;
-    const queryParams = endpoint.queryParams;
+export function generateEndpoint(endpoint) {
+    const { bodyProps, pathParams, queryParams } = endpoint;
     const returnObj = {};
     const body = {};
 
+    let endpointStr = endpoint.path;
     for (const param in pathParams) {
         const paramObj = pathParams[param];
 
-        if (paramObj.value === null) {
+        if (paramObj.value === undefined) {
             // console.log(`[WARNING] No value specified for path param: ${param}. Using default value: ${paramObj.default}`);
             paramObj.value = paramObj.default;
         }
 
-        if (paramObj.value === null) {
-            throw new Error(`Path parameter ${param} needs a value.`)
+        if (paramObj.value === undefined) {
+            throw new Error(`Path parameter ${param} needs a value.`);
         }
 
         endpointStr = endpointStr.replace(`{${param}}`, paramObj.value);
@@ -28,13 +22,13 @@ function generateEndpoint(endpoint) {
     for (const param in queryParams) {
         const paramObj = queryParams[param];
 
-        if (paramObj.value === null) {
+        if (paramObj.value === undefined) {
             // console.log(`[WARNING] No value specified for query param: ${param}. Using default value: ${paramObj.default}`);
             paramObj.value = paramObj.default;
         }
 
-        if (paramObj.value === null && paramObj.required) {
-            throw new Error(`Query parameter ${param} needs a value.`)
+        if (paramObj.value === undefined && paramObj.required) {
+            throw new Error(`Query parameter ${param} needs a value.`);
         }
 
         endpointStr += !endpointStr.includes('?') ? '?' : '&';
@@ -44,12 +38,12 @@ function generateEndpoint(endpoint) {
     for (const prop in bodyProps) {
         const propObj = bodyProps[prop];
 
-        if (propObj.value === null) {
+        if (propObj.value === undefined) {
             propObj.value = propObj.default;
         }
 
-        if (propObj.value === null && propObj.required) {
-            throw new Error(`Body property ${prop} needs a value.`)
+        if (propObj.value === undefined && propObj.required) {
+            throw new Error(`Body property ${prop} needs a value.`);
         }
 
         body[prop] = propObj.value;

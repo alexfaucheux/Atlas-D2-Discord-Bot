@@ -1,16 +1,12 @@
-const HTMLParser = require('html-to-json-parser');
-const { bold, underscore } = require('discord.js');
+import HTMLParser from "html-to-json-parser";
+import { bold, underscore } from "discord.js";
 
-module.exports = {
-    parseHtml
-};
-
-async function parseHtml(htmlContent) {
+export async function parseHtml(htmlContent) {
     // Creates an object out of the html
     if (!htmlContent.includes('<html>')) {
         htmlContent = `<html>${htmlContent}</html>`;
     }
-    let result = await HTMLParser.default(htmlContent, false);
+    let result = await HTMLParser(htmlContent, false);
     return generateStr({ parent: null, content: result.content, index: 0 }, '', 0);
 }
 

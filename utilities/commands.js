@@ -1,15 +1,15 @@
 // Import global functions
-const fs = require('node:fs');
-const path = require('node:path');
-const { Collection } = require('discord.js');
+import fs from 'node:fs';
+import { Collection } from 'discord.js';
+import { URL } from 'url';
 
-module.exports = {
-    getAllCommands: (type) => getCommands(type, 'all'),
-    getLiveCommands: (type) => getCommands(type, 'live'),
-    getTestCommands: (type) => getCommands(type, 'test')
-};
+const getAllCommands = (type) => getCommands(type, 'all');
+const getLiveCommands = (type) => getCommands(type, 'live');
+const getTestCommands = (type) => getCommands(type, 'test');
 
-function getCommands(type, subfolder) {
+export { getAllCommands, getLiveCommands, getTestCommands };
+
+async function getCommands(type, subfolder) {
     const fileToFolderPath = {};
     let commandFiles;
 
@@ -21,15 +21,13 @@ function getCommands(type, subfolder) {
         commandFiles = [...liveFiles, ...testFiles];
     }
 
-    const commands = getCommandList(commandFiles, fileToFolderPath, type);
+    const commands = await getCommandList(commandFiles, fileToFolderPath, type);
 
     return commands;
 }
 
 function getCommandFiles(fileToFolderPath, subfolder) {
-    const parentDir = path.dirname(__dirname);
-    let foldersPath = path.join(parentDir, 'commands');
-    foldersPath = path.join(foldersPath, subfolder);
+    const foldersPath = new URL(`../commands/${subfolder}`, import.meta.url);
 
     if (!fs.existsSync(foldersPath)) {
         fs.mkdirSync(foldersPath);
@@ -39,28 +37,28 @@ function getCommandFiles(fileToFolderPath, subfolder) {
     let commandFiles = [];
 
     for (const folder of commandFolders) {
-        const commandsPath = path.join(foldersPath, folder);
-        const folderFiles = fs.readdirSync(commandsPath).filter((file) => {
-            fileToFolderPath[file] = commandsPath;
+        const commands = new URL(foldersPath.href + '/' + folder);
+        const files = fs.readdirSync(commands).filter((file) => {
+            // console.log(file);
+            fileToFolderPath[file] = commands.href;
             return file.endsWith('.js');
         });
-        commandFiles = [...commandFiles, ...folderFiles];
+        commandFiles = [...commandFiles, ...files];
     }
 
     return commandFiles;
 }
 
-function getCommandList(commandFiles, fileToFolderPath, type) {
+async function getCommandList(commandFiles, fileToFolderPath, type) {
     const commands = type == 'client' ? new Collection() : [];
     for (const file of commandFiles) {
         const folderPath = fileToFolderPath[file];
-        const filePath = path.join(folderPath, file);
-        const command = require(filePath);
+        const filePath = new URL(`${folderPath}/${file}`);
+        const { default: command } = await import(filePath);
 
-        if (!('data' in command) || !('execute' in command)) {
-            const fileName = path.basename(filePath);
+        if (!command || !('data' in command) || !('execute' in command)) {
             console.log(
-                `\n[WARNING] The command at ${fileName} is missing a required "data" or "execute" property.\n`
+                `\n[WARNING] The command at ${file} is missing a required "data" or "execute" property.\n`
             );
             continue;
         }

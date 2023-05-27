@@ -1,7 +1,7 @@
-const { Events, ActionRowBuilder, quote } = require('discord.js');
-const { isAuthenticated, authButton } = require('../modules/auth.js');
+import { Events, ActionRowBuilder, quote } from "discord.js";
+import { isAuthenticated, authButton } from "../modules/auth.js";
 
-module.exports = {
+export default {
     name: Events.InteractionCreate,
     once: false,
     execute: async (interaction) => {
@@ -37,7 +37,8 @@ async function executeInteraction(interaction) {
     try {
         await command.execute(interaction);
     } catch (error) {
-        console.error(`Unabled to execute command.\n${error}`);
+        console.error(`Unabled to execute command.`);
+        console.error(error);
         await handleInteractionError(interaction, error);
     }
 }

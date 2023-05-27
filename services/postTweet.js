@@ -1,16 +1,14 @@
 // Import global functions
-const { EmbedBuilder } = require('discord.js');
+import { EmbedBuilder } from 'discord.js';
 
 // Import local functions
-const { getPrimeGamingTweets, getBungieTweets } = require('../utilities/twitter-scraper.js');
+import { getPrimeGamingTweets, getBungieTweets } from '../utilities/twitter-scraper.js';
 
 // import constants
-const { mongoClient } = require('../modules/db.js');
+import { mongoClient } from '../modules/db.js';
+import { footerMsg } from '../constants/twitter.js';
 
-module.exports = {
-    postHelpTweet,
-    postPrimeTweet
-};
+export { postHelpTweet, postPrimeTweet };
 
 async function postHelpTweet(channel, interaction) {
     const tweets = await getBungieTweets();
@@ -30,7 +28,6 @@ async function postPrimeTweet(channel, interaction) {
 async function postTweet(channel, tweet, title, interaction) {
     const collection = mongoClient.collections.tweets;
     const query = await collection.find({ twitId: tweet?.id }).toArray();
-    const footerMsg = 'Content pulled from Twitter';
 
     if (query.length || !tweet) {
         if (interaction) {
@@ -41,8 +38,6 @@ async function postTweet(channel, tweet, title, interaction) {
         }
         return;
     }
-
-    collection.insertOne({ twitId: tweet.id, url: tweet.url, author: tweet.fullname, obj: tweet });
 
     const embedMessage = new EmbedBuilder()
         .setColor(0xff33e1)
@@ -58,5 +53,15 @@ async function postTweet(channel, tweet, title, interaction) {
         .setFooter({ text: footerMsg || 'Twitter' })
         .setImage(tweet.attachments[0]?.src);
 
-    channel.send({ embeds: [embedMessage] });
+    try {
+        await channel.send({ embeds: [embedMessage] });
+        collection.insertOne({
+            twitId: tweet.id,
+            url: tweet.url,
+            author: tweet.fullname,
+            obj: tweet
+        });
+    } catch (e) {
+        console.error('Error posting tweet to channel:', e);
+    }
 }

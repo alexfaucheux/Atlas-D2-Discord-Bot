@@ -1,16 +1,17 @@
 // import global functions
-const { bold, blockQuote } = require('discord.js');
-const date = require('date-and-time');
-const axios = require('axios');
+import { bold, blockQuote } from "discord.js";
+import date from "date-and-time";
+import axios from "axios";
 
 // import local functions
-const { generateEndpoint } = require('../../../utilities/endpointGenerator');
+import { generateEndpoint } from "../../../utilities/endpointGenerator";
 
 // import constants
-const { mongoClient } = require('../../../modules/db.js');
-const { rootURI, endpoints } = require('../../../constants/bungieEndpoints.json');
+import { mongoClient } from "../../../modules/db.js";
+import paths from '../../../constants/bungieEndpoints.js';
 
 // assign constants
+const { rootURI, endpoints } = paths;
 const { BUNGIE_API_KEY } = process.env;
 const endpointObj = endpoints.getBungieRewards;
 
@@ -62,9 +63,12 @@ async function postRewards(channel) {
         reply += `\n${props?.Description}\n\n`;
     }
 
-    if (recordsToInsert.length) {
-        collection.insertMany(recordsToInsert);
+    try {
+        channel.send({ content: prefix + blockQuote(reply), ephemeral: true });
+        if (recordsToInsert.length) {
+            collection.insertMany(recordsToInsert);
+        }
+    } catch (e) {
+        console.error('Error posting to rewards channel:', e);
     }
-
-    channel.send({content: prefix + blockQuote(reply), ephemeral: true});
 }

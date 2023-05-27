@@ -1,26 +1,19 @@
 // Import global functions
-const axios = require('axios');
+import axios from 'axios';
 
 // Import local functions
-const { generateEndpoint } = require('./endpointGenerator.js');
+import { generateEndpoint } from './endpointGenerator.js';
 
 // Import constants
-const { rootURI, endpoints } = require('../constants/bungieEndpoints.json');
+import * as bungie from '../constants/bungie.js';
+
+const { api: rootURI } = bungie.urls;
+const { endpoints, htmlConfig: axiosConfig } = bungie.api;
 
 // Assign constants
-const { BUNGIE_API_KEY } = process.env;
 const endpointObj = endpoints.searchPlayerByName;
 
-const axiosConfig = {
-    headers: {
-        'X-API-Key': BUNGIE_API_KEY
-    }
-};
-
-module.exports = {
-    getProfiles,
-    getMainProfile
-};
+export { getProfiles, getMainProfile };
 
 async function getProfiles(bungieName) {
     const profiles = [];
@@ -28,10 +21,11 @@ async function getProfiles(bungieName) {
 
     endpointObj.bodyProps.displayName.value = name;
     endpointObj.bodyProps.displayNameCode.value = nameCode;
-    
+
+    const endpoint = generateEndpoint(endpointObj);
+
     // Generate endpoint using default values
     const url = rootURI + endpoint.path;
-    const endpoint = generateEndpoint(endpointObj);
     const resp = await axios.post(url, endpoint.body, axiosConfig);
 
     const bungieResp = resp.data.Response;

@@ -2,7 +2,8 @@
   "name": "destiny-2-discord-bot",
   "version": "1.0.0",
   "description": "first bot",
-  "main": "index.js",
+  "exports": "./index.js",
+  "type": "module",
   "scripts": {
     "start": "npm run deploy-run",
     "live": "npm run deploy-global-run",

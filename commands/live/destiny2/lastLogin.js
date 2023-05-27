@@ -1,36 +1,32 @@
 // Import global functions
-const axios = require('axios');
-const date = require('date-and-time');
-const { SlashCommandBuilder } = require('discord.js');
+import axios from 'axios';
+import date from 'date-and-time';
+import { SlashCommandBuilder } from 'discord.js';
 
 // Import local functions
-const { getProfiles } = require('../../../utilities/profile.js');
-const { generateEndpoint } = require('../../../utilities/endpointGenerator.js');
+import { getProfiles } from '../../../utilities/profile.js';
+import { generateEndpoint } from '../../../utilities/endpointGenerator.js';
 
 // Import constants
-const { rootURI, endpoints } = require('../../../constants/bungieEndpoints.json');
+import * as bungie from '../../../constants/bungie.js';
 
 // Assign constants
-const { BUNGIE_API_KEY } = process.env;
+const { api: rootURI } = bungie.urls;
+const { endpoints, htmlConfig: axiosConfig } = bungie.api;
 const profileEndpoint = endpoints.getDestinyProfile;
 
-const axiosConfig = {
-    headers: {
-        'X-API-Key': BUNGIE_API_KEY
-    }
-};
-
-module.exports = {
+export default {
+    oauth: false,
     data: new SlashCommandBuilder()
         .setName('last-login')
-        .setDescription("(TEST COMMAND) Gets a user's last login date.")
+        .setDescription("Gets a user's last login date.")
         .addStringOption((option) => {
             return option
                 .setName('bungie-name')
                 .setDescription('the player to query')
                 .setRequired(true);
         }),
-    async execute(interaction) {
+    execute: async function (interaction) {
         await getLastLogin(interaction);
     }
 };
