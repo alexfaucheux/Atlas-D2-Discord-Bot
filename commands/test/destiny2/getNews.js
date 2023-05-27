@@ -66,7 +66,7 @@ async function getNews(interaction) {
 
     // Include html in body of message if update news.
     // TODO: assign to dedicated hotfix / maintenance channel
-    if (title.includes('hotfix') || title.includes('destiny 2 update')) {
+    if (title.includes('hotfix')) {
         body = await parseHtml(news.HtmlContent);
     }
 
@@ -91,7 +91,5 @@ async function getNews(interaction) {
     // Posts discord message to same channel as command
     // TODO: Direct message to specified channel
     // TODO: Use mongoDB to remove redundant posts
-    interaction.channel.send({
-        embeds: [embedMessage]
-    });
+    await interaction.channel.send({ embeds: [embedMessage] }).catch(console.error(e));
 }

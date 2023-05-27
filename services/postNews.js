@@ -17,9 +17,7 @@ const { bungieIcon: iconURL } = twitter.paths.imagePaths;
 
 // Assign constants
 const destinyNews = endpoints.getBungieNews;
-export {
-    postNews
-};
+export { postNews };
 async function postNews(newsChannel, hotfixChannel) {
     let body = '';
     let channel = newsChannel;

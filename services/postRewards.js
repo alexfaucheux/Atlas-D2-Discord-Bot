@@ -63,9 +63,12 @@ async function postRewards(channel) {
         reply += `\n${props?.Description}\n\n`;
     }
 
-    if (recordsToInsert.length) {
-        collection.insertMany(recordsToInsert);
+    try {
+        channel.send({ content: prefix + blockQuote(reply), ephemeral: true });
+        if (recordsToInsert.length) {
+            collection.insertMany(recordsToInsert);
+        }
+    } catch (e) {
+        console.error('Error posting to rewards channel:', e);
     }
-
-    interactiont.reply({content: prefix + blockQuote(reply), ephemeral: true});
 }

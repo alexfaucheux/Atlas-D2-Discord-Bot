@@ -24,9 +24,12 @@ async function executeServices(client) {
 
     if (PORT) {
         // Live services
-        postHelpTweet(maintChannel);
-        postPrimeTweet(newsChannel);
-        postNews(newsChannel, hotfixChannel);
+        postHelpTweet(maintChannel).catch((e) => console.warn('Posting help tweet failed:', e));
+        postPrimeTweet(newsChannel).catch((e) => console.warn('Posting prime tweet failed.', e));
+        postNews(newsChannel, hotfixChannel).catch((e) => {
+            console.warn('Posting news failed:');
+            console.warn(e)
+        });
     } else {
         // Test services
     }
