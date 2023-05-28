@@ -20,7 +20,7 @@ export const tokenBody = {
 export const getAuthHeader = (accessToken) => {
     return {
         'Authorization': 'Bearer ' + accessToken,
-        ...tokenHeader
+        ...htmlConfig.headers
     }
 }
 
