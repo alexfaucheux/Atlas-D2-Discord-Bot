@@ -1,12 +1,15 @@
 import urls from './uri.js';
-const { BUNGIE_AUTH_ID, BUNGIE_AUTH_SECRET } = process.env;
+const { BUNGIE_AUTH_ID, BUNGIE_AUTH_SECRET, BUNGIE_API_KEY } = process.env;
 
 export const tokenHeader = {
     'Content-Type': 'application/x-www-form-urlencoded'
 };
 
 export const htmlConfig = {
-    headers: tokenHeader
+    headers: {
+        ...tokenHeader,
+        'X-API-KEY': BUNGIE_API_KEY
+    }
 };
 
 export const tokenBody = {
