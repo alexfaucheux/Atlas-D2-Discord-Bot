@@ -91,5 +91,5 @@ async function getNews(interaction) {
     // Posts discord message to same channel as command
     // TODO: Direct message to specified channel
     // TODO: Use mongoDB to remove redundant posts
-    await interaction.channel.send({ embeds: [embedMessage] }).catch(console.error(e));
+    await interaction.channel.send({ embeds: [embedMessage] }).catch(console.error);
 }

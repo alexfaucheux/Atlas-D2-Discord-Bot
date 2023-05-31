@@ -19,17 +19,12 @@ export const tokenBody = {
 
 export const getAuthHeader = (accessToken) => {
     return {
-        'Authorization': 'Bearer ' + accessToken,
-        ...htmlConfig.headers
-    }
-}
-
-export const getAxiosAuthHeader = (accessToken) => {
-    const authHeader = getAuthHeader(accessToken);
-    return {
-        headers: authHeader
-    }
-}
+        headers: {
+            Authorization: 'Bearer ' + accessToken,
+            ...htmlConfig.headers
+        }
+    };
+};
 
 export const endpoints = {
     authorize: {
