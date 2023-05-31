@@ -17,7 +17,7 @@ export const tokenBody = {
     client_secret: BUNGIE_AUTH_SECRET
 };
 
-export const getAuthHeader = (accessToken) => {
+export const getAxiosAuthHeader = (accessToken) => {
     return {
         headers: {
             Authorization: 'Bearer ' + accessToken,
