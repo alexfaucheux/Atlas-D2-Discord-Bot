@@ -8,6 +8,7 @@ package-lock.json
 node_modules
 manifest
 tweets
+tweetHTML
 
 generateDefaultEndpoints.js
 playground-1.mongodb.js

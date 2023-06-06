@@ -19,6 +19,7 @@ async function postHelpTweet(channel, interaction) {
 async function postPrimeTweet(channel, interaction) {
     const tweets = await getPrimeGamingTweets();
     const destinyTweets = tweets.filter((tweet) => {
+        const text = tweet.text.toLowerCase();
         return text.includes('destiny') && text.includes('spr.ly');
     });
 
