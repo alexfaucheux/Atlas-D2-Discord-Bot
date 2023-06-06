@@ -33,11 +33,11 @@ async function scrapeTweets(query, batches) {
         if (!cursor) {
             resp = await axios
                 .get(`${INSTANCE}/search?f=tweet&q=${query}`)
-                .catch((e) => console.error(`Web Scrape Axios Error: ${e.message}`));
+                .catch((e) => console.error('Web Scrape Axios Error:', e));
         } else {
             resp = await axios
                 .get(`${INSTANCE}/search${cursor}`)
-                .catch((e) => console.error(`Web Scrape Axios Error: ${e.message}`));
+                .catch((e) => console.error('Web Scrape Axios Error:', e));
         }
 
         const $ = cheerio.load(resp.data);
