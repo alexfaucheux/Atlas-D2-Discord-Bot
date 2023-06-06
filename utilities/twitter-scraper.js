@@ -32,7 +32,7 @@ async function scrapeTweets(query, batches) {
 
         if (!cursor) {
             resp = await axios
-                .get(`${INSTANCE}/search?f=tweet&q=${query}`)
+                .get(`${INSTANCE}/search?f=tweets&q=${query}`)
                 .catch((e) => console.error('Web Scrape Axios Error:', e));
         } else {
             resp = await axios
@@ -42,7 +42,7 @@ async function scrapeTweets(query, batches) {
 
         const $ = cheerio.load(resp.data);
 
-        let $tweet = $('div.timeline-item:first');
+        let $tweet = $('div.timeline-item').not('.thread').first();
         cursor = $('div.show-more:last a').attr('href');
 
         while ($tweet.length > 0) {
@@ -160,8 +160,8 @@ function getBodyTextWithHyperlinks($content) {
 async function generateTweetFiles(query) {
     const tweets = await scrapeTweets(query, 1);
     for (const tweet of tweets) {
-        const tweetFolderPath = path.join(parentDir, 'tweets');
-        const tweetFilePath = path.join(tweetFolderPath, `${tweet.id}.json`);
+        const tweetFolderPath = new URL(parentDir.href + `/tweets`);
+        const tweetFilePath = new URL(tweetFolderPath.href + `/${tweet.id}.json`);
 
         if (!fs.existsSync(tweetFolderPath)) {
             fs.mkdirSync(tweetFolderPath);
@@ -170,6 +170,11 @@ async function generateTweetFiles(query) {
         fs.writeFileSync(tweetFilePath, JSON.stringify(tweet, null, 2));
     }
 }
+
+// generateTweetFiles('from:primegaming');
+// scrapeTweets('from:primegaming', 1).then((tweets) =>
+//     console.log(JSON.stringify(tweets, null, 2))
+// );
 
 // if (require.main === module) {
 //     generateTweetFiles('from:BungieHelp');

@@ -12,5 +12,5 @@ export default {
 };
 
 async function getLatestTweet(interaction) {
-    postPrimeTweet(interaction.channel, interaction);
+    await postPrimeTweet(interaction.channel, interaction);
 }

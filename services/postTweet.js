@@ -13,16 +13,17 @@ export { postHelpTweet, postPrimeTweet };
 async function postHelpTweet(channel, interaction) {
     const tweets = await getBungieTweets();
     const title = 'Bungie Server Announcement';
-    postTweet(channel, tweets[0], title, interaction);
+    await postTweet(channel, tweets[0], title, interaction);
 }
 
 async function postPrimeTweet(channel, interaction) {
-    const tweets = (await getPrimeGamingTweets()).filter((tweet) => {
-        const text = tweet.text.toLowerCase();
+    const tweets = await getPrimeGamingTweets();
+    const destinyTweets = tweets.filter((tweet) => {
         return text.includes('destiny') && text.includes('spr.ly');
     });
+
     const title = 'Prime Gaming Announcement';
-    postTweet(channel, tweets[0], title, interaction);
+    await postTweet(channel, destinyTweets[0], title, interaction);
 }
 
 async function postTweet(channel, tweet, title, interaction) {
